@@ -1,0 +1,30 @@
+﻿/*.modal-header {
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    background: white;
+}
+
+.modal-title {
+    line-height: 1.42857143;
+    color: white;
+}*/
+
+.table > thead > tr > th {
+  border-bottom: 1px solid #e6e7e8;
+  vertical-align: middle;
+  text-align:center; 
+  background:#2980B9;
+  color:white;
+}
+
+.table {
+  background: #fff; }
+
+/*.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+    padding: 7px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}*/
+
+

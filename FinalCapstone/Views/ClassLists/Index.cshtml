@@ -1,0 +1,60 @@
+﻿@model IEnumerable<FinalCapstone.ClassList>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "StudentEnrollment")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            ID Number
+        </th>
+        <th>
+            First Name
+        </th>
+        <th>
+            Last Name
+        </th>
+        <th>
+            Subject
+        </th>
+        <th>
+            Group Number
+        </th>
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.User.idnumber)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.User.f_name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.User.l_name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Class.Subject.Course.courseno)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Class.group_no)
+    </td>
+    <td>
+       
+        <button onclick="location.href='@Url.Action("Edit","ClassLists", new { id =item.classlist_id})'">Edit</button>
+        <button onclick="location.href='@Url.Action("Delete","ClassLists", new { id =item.classlist_id})'">Delete</button>
+
+    </td>
+</tr>
+}
+
+</table>

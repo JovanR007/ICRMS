@@ -1,0 +1,88 @@
+﻿@model FinalCapstone.User
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.f_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.f_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.l_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.l_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.idnumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.idnumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.password)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.password)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Batch.batch_id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Batch.batch_id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClassList.classlist_id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClassList.classlist_id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Program.program1)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Program.program1)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Role.user_type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Role.user_type)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

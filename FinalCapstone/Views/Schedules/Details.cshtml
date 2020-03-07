@@ -1,0 +1,42 @@
+﻿@model FinalCapstone.Schedule
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Schedule</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.time_start)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.time_start)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.time_end)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.time_end)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.day)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.day)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.schedule_id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

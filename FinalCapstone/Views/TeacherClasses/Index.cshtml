@@ -1,0 +1,117 @@
+﻿@model FinalCapstone.Models.TeacherClasses_Component
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+}
+
+<div>
+    <table class="table" id="tbl_teacherclasses">
+        <tr>
+            <th>Course Code</th>
+            <th>Course Title</th>
+            <th>Room Number</th>
+            <th>Time Start</th>
+            <th>Time End</th>
+            <th>Day</th>
+            <th>Group Number</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model._data)
+        {
+            <tr align="center">
+                <td>@item.courseno</td>
+                <td>@item.coursetitle</td>
+                <td>@item.roomnumber</td>
+                <td>@item.starttime</td>
+                <td>@item.endtime</td>
+                <td>@item.day</td>
+                <td>@item.groupno</td>
+                <td><p>@Html.ActionLink("View Class List", "ClassListDetails", new { classid = item.classid, coursetitle = item.coursetitle , userlogin = ViewBag.test })</p></td>
+                <td><p>@Html.ActionLink("View Exam List", "ExamListDetails", new { classid = item.classid, coursetitle = item.coursetitle, userlogin = ViewBag.test })</p></td>
+                <td><p>@Html.ActionLink("View Class Grade", "ClassDetails", new { classid = item.classid, coursetitle = item.coursetitle, userlogin = ViewBag.test })</p></td>
+            </tr>
+        }
+    </table>
+</div>
+
+    <script src="~/Scripts/json2.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).on('click', '.clsDetails', function () {
+            var classid = $(this).attr('data-id');
+            if (classid != '') {
+                $.ajax({
+                    url: '/TeacherClasses/ClassDetails',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { 'classid': classid },
+                    success: function (response) {
+                        if (response.respcode == 1) {
+                            //console.log(response._data);
+                            var mycolumn = [];
+                            var mydata = [];
+
+                            for (var i = 0; i < response._getData.length; i++) {
+                                var obj = {};
+
+                                for (var z = 0; z < response._getData[i].length; z++) {
+
+                                    obj[response._getData[i][z].Key] = response._getData[i][z].Value;
+                                    if (i == 0) {
+                                        var objCol = {};
+                                        objCol.data = response._getData[i][z].Key;
+                                        objCol.title = response._getData[i][z].Key;
+
+                                        mycolumn.push(objCol);
+                                    }
+
+
+                                }
+                                mydata.push(obj);
+                            }
+
+                            if (mydata.length != 0) {
+
+                                $('#tbl_classesdetails').DataTable().destroy();
+                                $('#tbl_classesdetails').empty();
+                                $('#tbl_classesdetails').DataTable({
+
+                                    columns: mycolumn,
+                                    data: mydata,
+                                    bFilter: false,
+                                    bInfo: true,
+                                    bLengthChange: false,
+                                    //bSort: false,
+                                    deferRender: true,
+                                    scrollY: 500,
+                                    scrollCollapse: true,
+                                    scroller: true,
+                                    order: [[0, 'desc']],
+                                    buttons: [
+                                        {
+                                            extend: 'excel',
+                                            text: 'Download',
+                                            orientation: 'landscape',
+                                            filename: iden + 'ManhoursPerBillingCycle',
+                                            pageSize: 'LEGAL',
+                                            CompanyName: CompanyName,
+                                            Address: CompanyAddress,
+                                            Contact: CompanyContact,
+                                            Title: iden + ' Manhours Per Billing Cycle Report'
+                                        }, ],
+                                    "language": {
+                                        "decimal": ",",
+                                        "thousands": "."
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+

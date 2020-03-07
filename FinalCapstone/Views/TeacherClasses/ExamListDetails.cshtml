@@ -1,0 +1,224 @@
+﻿@model FinalCapstone.Models.getExamListResponse
+@{
+    ViewBag.Title = "ExamListDetails";
+    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/Teachercss/bootstrap.min.css" />
+</head>
+<body>
+    <h2>Exam Details - @ViewBag.coursetitle</h2>
+    <p>
+        <button class="btn btn-primary addexam" data-id="@ViewBag.userlogin">Add Exam</button>
+    </p>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-responsive" id="tbl_examlist" style="width:100%">
+                <thead class="headr-color">
+                    <tr>
+                        <th hidden>Exam List ID</th>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Perfect Score</th>
+                        <th>Weight</th>
+                        <th>Lock</th>
+                        <th hidden>Rubric ID</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (dynamic item in Model._data)
+                        {
+                            <tr align="center">
+                                <td hidden>@item.examlist_id</td>
+                                <td>@item.exam_type</td>
+                                <td>@item.examtype_name</td>
+                                <td>@item.perfect_score</td>
+                                <td>@item.weight</td>
+                                <td>@item.islock</td>
+                                <td hidden>@item.rubric_id</td>
+                                <td>
+                                    <button class="btn btn-primary editexamlst" data-examid="@item.examlist_id">Edit</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary delexamlst" data-examid="@item.examlist_id">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section ModalSection{
+
+        <div id="AddExamModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*<button type="button" class="close" data-dismiss="modal">X</button>*@
+                        <h4 class="modal-title" id="exammodaltitle">Add Exam</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label class="">Type <b style="color: red;">*</b></label>
+                                <select id="selExamType" class="selectpicker form-control">
+                                    @{
+                                        //<option value=""></option>
+                                        foreach (var x in Model._examtype)
+                                        {
+                                            <option value="@x.examtype_id">@x.exam_type</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-md-2" style="margin-top: 25px;">
+                                <label class="">Lock</label>
+                                <input type="checkbox" id="chkLock" name="Lock" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="">Name <b style="color: red;"></b></label>
+                                <input class="form-control mandatory" name="ExamName" readonly style="background-color: #eee;" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="">Perfect Score <b style="color: red;"></b></label>
+                                <input class="form-control mandatory" name="PerfectScore" readonly style="background-color: #eee;" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="">Weight <b style="color: red;"></b></label>
+                                <input class="form-control mandatory" name="Weight" readonly style="background-color: #eee;" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-addexam" data-classid="@ViewBag.classid"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <style>
+        .numval {
+            text-align: right;
+        }
+    </style>
+    <script src="~/Scripts/json2.js"> </script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"> </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetExamType();
+        });
+
+        $(document).on('click', '.delexamlst', function () {
+            var examid = $(this).attr('data-examid');
+            if (examid != '') {
+                $.ajax({
+                    type: "POST",
+                    url: '/TeacherClasses/DeleteExamList',
+                    type: "post",
+                    dataType: 'json',
+                    data: { 'examlist_id': examid },
+                    success: function (datax) {
+                        if (datax.respcode == 1) {
+                            alert('success');
+                            location.reload();
+                        }
+                        else {
+                            alert('fail');
+                        }
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '.addexam', function () {
+            $('#AddExamModal').modal('show');
+        });
+
+        $(document).on('click', '.btn-addexam', function () {
+            var classid = $(this).attr('data-classid');
+            var examtypeid = $('#selExamType').val();
+            var lock = $('#chkLock').is(':checked');
+            var userlogin = $('.addexam').attr('data-id');
+
+            if (examtypeid == '') {
+                alert('Exam Type is empty.');
+            }
+            if (classid != '' && examtypeid != '') {
+                $.ajax({
+                    type: "POST",
+                    url: '/TeacherClasses/InsertExamList',
+                    type: "post",
+                    dataType: 'json',
+                    data: { 'classid': classid, 'examtypeid': examtypeid, 'islock': lock, 'userlogin': userlogin },
+                    success: function (datax) {
+                        if (datax.respcode == 1) {
+                            alert('success');
+                            location.reload();
+                        }
+                        else {
+                            alert('fail');
+                        }
+                    }
+                });
+            }
+
+        });
+
+        $(document).on('change', '#selExamType', function () {
+            GetExamType();
+        });
+
+        $('#chkLock').on('change', function () {
+            //if ($('#chkLock').is(":checked")) {
+            //    $(this).closest('label').html('Lock');
+            //}
+            //else {
+            //    $(this).closest('label').html('Unlock');
+            //}
+        });
+
+        function GetExamType() {
+            if ($('#selExamType').val() != '') {
+                $.ajax({
+                    type: "POST",
+                    url: '/TeacherClasses/AddExamType',
+                    type: "post",
+                    dataType: 'json',
+                    data: { 'examtypeid': $('#selExamType').val() },
+                    success: function (datax) {
+                        if (datax.respcode == 1) {
+                            $('input[name=ExamName]').val(datax._data[0].examtype_name);
+                            $('input[name=PerfectScore]').val(datax._data[0].perfect_score);
+                            $('input[name=Weight]').val(datax._data[0].weight);
+                        }
+                        else {
+                            alert('fail');
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+</body>
+</html>

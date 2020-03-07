@@ -1,0 +1,502 @@
+﻿@model FinalCapstone.Models.ClassDetails_Component
+@{
+    ViewBag.Title = "ClassDetails";
+    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/Teachercss/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/Content/Teachercss/teacherStyle.css" />*@
+</head>
+<body>
+    <h2>Class Details - @ViewBag.coursetitle</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-responsive" id="tbl_classesdetails" style="width:100%">
+                <thead class="taud2 ">
+                    @{
+                        foreach (dynamic item in Model._data)
+                        {
+                            <tr>
+                                <th></th>
+                                @foreach (var v in (item as IDictionary<string, object>))
+                                {
+                                    var key = v.Key;
+                                    if (key.Contains("|"))
+                                    {
+                                        var arrKey = key.Split('|');
+                                        <th class="cls_header" data-examtypeid="@arrKey[0]">@arrKey[1]</th>
+                                    }
+                                    else if (key != "user_id")
+                                    {
+                                        <th>@key</th>
+                                    }
+                                }
+                            </tr>
+                            break;
+                        }
+                    }
+                </thead>
+                <tbody>
+                    @{
+                        foreach (dynamic item in Model._data)
+                        {
+                            <tr>
+                                @{
+                                    <td><button class="btn btn-primary btn-sm addgrade" data-classid="@ViewBag.classid">Add</button></td>
+                                    double totalgrade = 0;
+                                    double sumscore = 0;
+                                    double sumperfectscore = 0;
+                                    double rubricgrade = 0;
+                                    var userid = "";
+                                    int rubricid = 0;
+                                    bool first = true;
+
+                                    foreach (var v in (item as IDictionary<string, object>))
+                                    {
+                                        if (v.Key.Contains("|"))
+                                        {
+                                            var arrKey = v.Key.Split('|');
+                                            try
+                                            {
+                                                if (first)
+                                                {
+                                                    rubricid = Convert.ToInt32(arrKey[4]);
+                                                    first = false;
+                                                }
+
+                                                if (rubricid == Convert.ToInt32(arrKey[4]))
+                                                {
+                                                    sumscore += Convert.ToDouble(v.Value);
+                                                    sumperfectscore += Convert.ToDouble(arrKey[2]);
+                                                    rubricgrade = (sumscore / sumperfectscore) * Convert.ToDouble(arrKey[3]);
+                                                }
+                                                else
+                                                {
+                                                    totalgrade += rubricgrade;
+                                                    rubricid = Convert.ToInt32(arrKey[4]);
+                                                    sumscore = Convert.ToDouble(v.Value);
+                                                    sumperfectscore = Convert.ToDouble(arrKey[2]);
+                                                    rubricgrade = (sumscore / sumperfectscore) * Convert.ToDouble(arrKey[3]);
+                                                    // totalgrade += (Convert.ToDouble(v.Value) / Convert.ToDouble(arrKey[2])) * Convert.ToDouble(arrKey[3]);
+                                                    //totalgrade += Convert.ToDouble(v.Value);
+                                                }
+
+                                            }
+                                            catch { }
+
+                                            if (arrKey[1] == "Final Grade")
+                                            {
+                                                try
+                                                {
+                                                    double finalgrade = 0.00;
+                                                    if (totalgrade >= 60)
+                                                    {
+                                                        finalgrade = (1.00 + ((100 - totalgrade) / 20.00));
+                                                    }
+                                                    else
+                                                    {
+                                                        finalgrade = ((((59.00 * 5.00) - (1.9 * totalgrade)) / 59.00));
+
+                                                    }
+                                                    <td class="numval"><a href="#" id="finalGrade" data-classid="@ViewBag.classid">@finalgrade</a></td>
+                                                }
+                                                catch { }
+
+                                            }
+                                            else if (arrKey[1] == "Total")
+                                            {
+                                                <td class="numval">@totalgrade</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="numval">@v.Value</td>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            
+                                            var strKey =  v.Key; 
+                                            if (strKey == "user_id")
+                                            {
+                                                userid = v.Value.ToString();
+                                            }
+
+                                            else if (strKey == "ID Number")
+                                            {
+                                                <td><a href="#" id="idnum" data-idno="@userid" data-classid="@ViewBag.classid" >@v.Value</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td>@v.Value</td>
+                                            }
+
+                                        }
+                                        //totalgrade += rubricgrade;
+                                    }
+
+                                }
+                            </tr>
+                                    }
+                    }
+                </tbody>
+            </table>
+            @*<div style="margin:10px" id="divSave">
+                    <button class="btn btn-primary" id="btn-save"><i class="fas fa-save"></i> Save</button>
+                </div>*@
+        </div>
+    </div>
+    @section ModalSection{
+
+        <div id="AttendanceDetailModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*<button type="button" class="close" data-dismiss="modal">X</button>*@
+                        <h4 class="modal-title" id="attDtltitle"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row attDtltablediv"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="AddGradeModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    @*<button type="button" class="close" data-dismiss="modal">X</button>*@
+                    <h4 class="modal-title" id="grademodaltitle"></h4>
+                </div>
+                <div class="modal-body" id="grademodalbody" data-idno="">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="">Type <b style="color: red;">*</b></label>
+                            <select id="selExamType" class="selectpicker form-control">
+                                @{
+                                    //<option value=""></option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="">Perfect Score <b style="color: red;"></b></label>
+                            <input class="form-control mandatory" name="PerfectScore" readonly style="background-color: #eee;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="">Weight <b style="color: red;"></b></label>
+                            <input class="form-control mandatory" name="Weight" readonly style="background-color: #eee;" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="">Grade <b style="color: red;"></b></label>
+                            <input class="form-control mandatory" name="Grade" readonly style="background-color: #eee;" required="required" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="">Score <b style="color: red;"></b></label>
+                            <input class="form-control mandatory" id="scoreID" name="Score" step="any" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="3" required="required" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-addgrade" data-classid="@ViewBag.classid" data-id="@ViewBag.userlogin"><i class="fas fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    }
+
+    <style>
+        .numval {
+            text-align: right;
+        }
+    </style>
+    <script src="~/Scripts/json2.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/TeacherClass/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(document).on('click', '.addgrade', function () {
+                var idno = $(this).closest('tr').find('td').find('a').attr('data-idno');
+                var classid = $(this).attr('data-classid');
+                var lastname = $(this).closest('tr').find('td').eq(2).html();
+                var firstname = $(this).closest('tr').find('td').eq(3).html();
+                $.ajax({
+                    async: true,
+                    url: "/TeacherClasses/GetExamTypeByUser",
+                    type: "post",
+                    dataType: 'json',
+                    data: { 'idnumber': idno, 'classid': classid },
+                    success: function (datax) {
+                        if (datax.respcode == 1) {
+                            if (datax._data != null) {
+                                var html = '';
+                                for (var x = 0; x < datax._data.length; x++) {
+                                    html += '<option value="' + datax._data[x].examtype_id + '">' + datax._data[x].examtype_name + '</option>';
+                                }
+                                $("#selExamType").append(html);
+                            }
+                        }
+                        $('#grademodaltitle').html(lastname + ', ' + firstname);
+                        $('#grademodalbody').attr('data-idno', '');
+                        $('#grademodalbody').attr('data-idno', idno);
+                        $('#AddGradeModal').modal('show');
+                    }
+                });
+
+            });
+
+            $(document).on('click', '.btn-addgrade', function () {
+
+                var classid = $(this).attr('data-classid');
+                var examtypeid = $('#selExamType').val();
+                var userid = $('#grademodalbody').attr('data-idno');
+                var userlogin = $(this).attr('data-id');
+                var grade = $('input[name=Grade]').val();
+
+                if (userid != '') {
+                    $.ajax({
+                        type: "POST",
+                        url: '/TeacherClasses/InsertGrade',
+                        type: "post",
+                        dataType: 'json',
+                        data: { 'class_id': classid, 'examtype_id': examtypeid, 'user_id': userid, 'grade': grade, 'userlogin': userlogin },
+                        success: function (datax) {
+                            if (datax.respcode == 1) {
+                                alert('success');
+                                location.reload();
+                            }
+                            else {
+                                alert('fail');
+                            }
+                        }
+                    });
+                }
+            });
+
+            $(document).on('click', '#selExamType', function () {
+                GetExamType();
+            });
+
+            $(document).on('change', '#selExamType', function () {
+                GetExamType();
+            });
+
+            function GetExamType() {
+                if ($('#selExamType').val() != '') {
+                    $.ajax({
+                        type: "POST",
+                        url: '/TeacherClasses/AddExamType',
+                        type: "post",
+                        dataType: 'json',
+                        data: { 'examtypeid': $('#selExamType').val() },
+                        success: function (datax) {
+                            if (datax.respcode == 1) {
+                                $('input[name=PerfectScore]').val(datax._data[0].perfect_score);
+                                $('input[name=Weight]').val(datax._data[0].weight);
+                            }
+                            else {
+                                alert('fail');
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        $(document).on('keypress keyup', '#scoreID', function (event) {
+            if ($('input[name=PerfectScore]').val() != '' && $('input[name=Weight]').val() != '')
+            {
+                var perf = parseFloat($('input[name=PerfectScore]').val());
+                var weight = parseFloat($('input[name=Weight]').val());
+                $('input[name=Grade]').val(($(this).val() / perf) * weight);
+            }
+            
+        });
+
+        $(document).on('click', '#idnum', function () {
+            var idno = $(this).attr('data-idno');
+            var classid = $(this).attr('data-classid');
+            var lastname = $(this).closest('tr').find('td').eq(2).html();
+            var firstname = $(this).closest('tr').find('td').eq(3).html();
+
+            $.ajax({
+                async: true,
+                url: "/TeacherClasses/GetStudentAttendance",
+                type: "post",
+                dataType: 'json',
+                data: { 'idnumber': idno, 'classid': classid },
+                success: function (datax) {
+                    if (datax.respcode == 1) {
+                        if (datax._res != null)
+                        {
+                            var tblhtml = '<div class="col-md-12">\
+                                            <table id="atttbl" class="table table-responsive" style="width:100%">\
+                                                <thead>\
+                                                    <tr>\
+                                                    <th>Date</th>\
+                                                    <th>Status</th>\
+                                                    </tr>\
+                                                </thead>\
+                                                <tbody></tbody>\
+                                            </table>\
+                                        </div>';
+                            $('.attDtltablediv div').remove();
+                            $('.attDtltablediv').html(tblhtml);
+
+                            var html = '';
+                            for(var x = 0; x< datax._res.length; x++)
+                            {
+                                html += '<tr><td>' + datax._res[x].Date + '</td><td>' + datax._res[x].Status + '</td><tr>';
+                            }
+                            $('#atttbl tbody').html('');
+                            $('#atttbl tbody').html(html);
+                        }
+                    }
+                    $('#attDtltitle').html(lastname + ', ' + firstname);
+                    $('#AttendanceDetailModal').modal('show');
+                }
+            });
+        });
+
+        $(document).on('click', '#finalGrade', function () {
+            var idno = $(this).closest('tr').find('td').find('a').attr('data-idno');
+            var lastname = $(this).closest('tr').find('td').eq(2).html();
+            var firstname = $(this).closest('tr').find('td').eq(3).html();
+            var classid = $(this).attr('data-classid');
+            $.ajax({
+                async: true,
+                url: "/TeacherClasses/GetFinalGradeByUser",
+                type: "post",
+                dataType: 'json',
+                data: { 'idnumber': idno, 'classid': classid },
+                success: function (datax) {
+                    if (datax.respcode == 1) {
+                        if (datax._data != null) {
+                            var tblhtml = '<div class="col-md-12">\
+                                            <table id="finalGradetbl" class="table table-responsive" style="width:100%">\
+                                                <thead>\
+                                                    <tr>\
+                                                    <th>Exam Type</th>\
+                                                    <th>Score</th>\
+                                                    <th>Perfect Score</th>\
+                                                    <th>Weight</th>\
+                                                    <th>Grade</th>\
+                                                    </tr>\
+                                                </thead>\
+                                                <tbody></tbody>\
+                                            </table>\
+                                        </div>';
+                            $('.attDtltablediv div').remove();
+                            $('.attDtltablediv').html(tblhtml);
+                            var html = '';
+                            var totalGrade = 0;
+                            for (var x = 0; x < datax._data.length; x++) {
+                                totalGrade += parseFloat(datax._data[x].grade);
+                                html += '<tr>\
+                                            <td>' + datax._data[x].examtype_name + '</td>\
+                                            <td>' + datax._data[x].score + '</td>\
+                                            <td>' + datax._data[x].perfect_score + '</td>\
+                                            <td>' + datax._data[x].weight + '</td>\
+                                            <td>' + datax._data[x].grade + '</td>\
+                                        <tr>';
+                                
+                            }
+                            html += '<tr>\
+                                            <td>Total Grade</td>\
+                                            <td><b><td><b><td><b><td><b>' + totalGrade + '</b></td>\
+                                            <td></td>\
+                                            <td></td>\
+                                        <tr>';
+                            $('#finalGradetbl tbody').html(html);
+                        }
+                    }
+                    $('#attDtltitle').html(lastname + ', ' + firstname);
+                    $('#AttendanceDetailModal').modal('show');
+                }
+            });
+        });
+
+        $(document).on('click', '#btn-save', function () {
+            var examscores = new Array();
+            //loop tbody tr
+            $('#examscore tbody tr').each(function () {
+                //loop tr td
+                $(this).find('td').each(function () {
+                    var grd = $(this).find('input').val();
+                    if (grd != "" && grd != undefined) {
+                        var examscore = {};
+                        examscore.user_id = $(this).find('input').attr('data-id');
+                        examscore.grade = $(this).find('input').val();
+                        examscore.examtype_id = $(this).find('input').attr('data-type');
+                        examscores.push(examscore);
+                    }
+                });
+            });
+
+            if (examscores.length > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: '/TeacherClasses/UpdateGrade',
+                    data: JSON.stringify(examscores),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+
+                    success: function () {
+                        alert('success');
+                    },
+
+                    error: function () {
+                        alert('fail');
+                    }
+                });
+            }
+        });
+
+        $(document).on('change', '.gradetxt', function () {
+            var tr = $(this).closest('tr');
+            var grade = $(this).val();
+            var weight = $(this).attr('data-weight');
+            $(this).attr('data-grade', (parseFloat(grade) * parseFloat(weight) / 100.00))
+            TotalScore(tr);
+        });
+
+        function TotalScore(tr) {
+            var totalgrade = 0;
+            var ctr = 0;
+            var finalgrade = 0;
+            tr.find('td input:text').each(function () {
+                var grade = $(this).attr('data-grade');
+                totalgrade += parseFloat(grade);
+                ctr++;
+            });
+            if (totalgrade > 0);
+            {
+                if (totalgrade >= 60) finalgrade = (((100 - 60) + (2 * (100 - totalgrade))) / (100.00 - 60.00));
+                else finalgrade = (((59.00 * 5) - (1.9 * totalgrade)) / 59.00);
+                tr.find('td').eq(ctr + 3).html(totalgrade.toFixed(2));
+                tr.find('td').eq(ctr + 4).html(finalgrade.toFixed(2));
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+    

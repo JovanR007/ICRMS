@@ -1,0 +1,43 @@
+﻿@model FinalCapstone.Rubric
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Rubric</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.outputs)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.outputs)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.weight)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.weight)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Course.courseno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Course.courseno)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.rubric_id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

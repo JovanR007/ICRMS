@@ -1,0 +1,1000 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Capstone2Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Batch">
+          <Key>
+            <PropertyRef Name="batch_id" />
+          </Key>
+          <Property Name="batch_id" Type="int" Nullable="false" />
+          <Property Name="batch" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Class">
+          <Key>
+            <PropertyRef Name="class_id" />
+          </Key>
+          <Property Name="class_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="classroom_id" Type="int" />
+          <Property Name="user_id" Type="int" />
+          <Property Name="subject_id" Type="int" />
+          <Property Name="schedule_id" Type="int" />
+          <Property Name="group_no" Type="int" />
+        </EntityType>
+        <EntityType Name="ClassList">
+          <Key>
+            <PropertyRef Name="classlist_id" />
+          </Key>
+          <Property Name="classlist_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="class_id" Type="int" />
+          <Property Name="classlist_no" Type="int" />
+        </EntityType>
+        <EntityType Name="Classroom">
+          <Key>
+            <PropertyRef Name="classroom_id" />
+          </Key>
+          <Property Name="classroom_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="capacity" Type="int" />
+          <Property Name="room_number" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="course_id" />
+          </Key>
+          <Property Name="course_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="courseno" Type="varchar" MaxLength="50" />
+          <Property Name="coursetitle" Type="varchar" MaxLength="50" />
+          <Property Name="coursedescription" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="ExamList">
+          <Key>
+            <PropertyRef Name="examlist_id" />
+          </Key>
+          <Property Name="examlist_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="class_id" Type="int" />
+          <Property Name="examtype_id" Type="int" />
+        </EntityType>
+        <EntityType Name="ExamScore">
+          <Key>
+            <PropertyRef Name="examscore_id" />
+          </Key>
+          <Property Name="examscore_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_id" Type="int" />
+          <Property Name="grade" Type="int" />
+          <Property Name="examtype_id" Type="int" />
+        </EntityType>
+        <EntityType Name="ExamType">
+          <Key>
+            <PropertyRef Name="examtype_id" />
+          </Key>
+          <Property Name="examtype_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rubric_id" Type="int" />
+          <Property Name="exam_type" Type="varchar" MaxLength="50" />
+          <Property Name="perfect_score" Type="int" />
+          <Property Name="examtype_name" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Program">
+          <Key>
+            <PropertyRef Name="program_id" />
+          </Key>
+          <Property Name="program_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="program" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_type" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Rubric">
+          <Key>
+            <PropertyRef Name="rubric_id" />
+          </Key>
+          <Property Name="rubric_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="outputs" Type="varchar" MaxLength="50" />
+          <Property Name="weight" Type="int" />
+          <Property Name="course_id" Type="int" />
+        </EntityType>
+        <EntityType Name="Schedule">
+          <Key>
+            <PropertyRef Name="schedule_id" />
+          </Key>
+          <Property Name="schedule_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="time_start" Type="datetime" />
+          <Property Name="time_end" Type="datetime" />
+          <Property Name="day" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Subject">
+          <Key>
+            <PropertyRef Name="subject_id" />
+          </Key>
+          <Property Name="subject_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="course_id" Type="int" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="f_name" Type="varchar" MaxLength="50" />
+          <Property Name="l_name" Type="varchar" MaxLength="50" />
+          <Property Name="idnumber" Type="bigint" />
+          <Property Name="password" Type="bigint" />
+          <Property Name="role_id" Type="int" />
+          <Property Name="program_id" Type="int" />
+          <Property Name="batch_id" Type="int" />
+        </EntityType>
+        <Association Name="BatchInUser">
+          <End Role="Batch" Type="Self.Batch" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Batch">
+              <PropertyRef Name="batch_id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="batch_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClassInClasslist">
+          <End Role="Class" Type="Self.Class" Multiplicity="0..1" />
+          <End Role="ClassList" Type="Self.ClassList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Class">
+              <PropertyRef Name="class_id" />
+            </Principal>
+            <Dependent Role="ClassList">
+              <PropertyRef Name="class_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClassInExamList">
+          <End Role="Class" Type="Self.Class" Multiplicity="0..1" />
+          <End Role="ExamList" Type="Self.ExamList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Class">
+              <PropertyRef Name="class_id" />
+            </Principal>
+            <Dependent Role="ExamList">
+              <PropertyRef Name="class_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClassroomInClass">
+          <End Role="Classroom" Type="Self.Classroom" Multiplicity="0..1" />
+          <End Role="Class" Type="Self.Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Classroom">
+              <PropertyRef Name="classroom_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="classroom_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CourseInRubric">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="Rubric" Type="Self.Rubric" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="Rubric">
+              <PropertyRef Name="course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CourseInSubject">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="Subject" Type="Self.Subject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="Subject">
+              <PropertyRef Name="course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ExamTypeInExamList">
+          <End Role="ExamType" Type="Self.ExamType" Multiplicity="0..1" />
+          <End Role="ExamList" Type="Self.ExamList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamType">
+              <PropertyRef Name="examtype_id" />
+            </Principal>
+            <Dependent Role="ExamList">
+              <PropertyRef Name="examtype_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ExamTypeInExamScore">
+          <End Role="ExamType" Type="Self.ExamType" Multiplicity="0..1" />
+          <End Role="ExamScore" Type="Self.ExamScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamType">
+              <PropertyRef Name="examtype_id" />
+            </Principal>
+            <Dependent Role="ExamScore">
+              <PropertyRef Name="examtype_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProgramInUser">
+          <End Role="Program" Type="Self.Program" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="program_id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="program_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RoleInUser">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RubricInExamType">
+          <End Role="Rubric" Type="Self.Rubric" Multiplicity="0..1" />
+          <End Role="ExamType" Type="Self.ExamType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rubric">
+              <PropertyRef Name="rubric_id" />
+            </Principal>
+            <Dependent Role="ExamType">
+              <PropertyRef Name="rubric_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ScheduleInClass">
+          <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1" />
+          <End Role="Class" Type="Self.Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Schedule">
+              <PropertyRef Name="schedule_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="schedule_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SubjectInClass">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="0..1" />
+          <End Role="Class" Type="Self.Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="subject_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="subject_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserInClass">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Class" Type="Self.Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserInClasslist">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="ClassList" Type="Self.ClassList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="ClassList">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserInExamScore">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="ExamScore" Type="Self.ExamScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="ExamScore">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Capstone2ModelStoreContainer">
+          <EntitySet Name="Batch" EntityType="Self.Batch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Class" EntityType="Self.Class" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClassList" EntityType="Self.ClassList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Classroom" EntityType="Self.Classroom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExamList" EntityType="Self.ExamList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExamScore" EntityType="Self.ExamScore" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExamType" EntityType="Self.ExamType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Program" EntityType="Self.Program" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rubric" EntityType="Self.Rubric" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subject" EntityType="Self.Subject" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="BatchInUser" Association="Self.BatchInUser">
+            <End Role="Batch" EntitySet="Batch" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="ClassInClasslist" Association="Self.ClassInClasslist">
+            <End Role="Class" EntitySet="Class" />
+            <End Role="ClassList" EntitySet="ClassList" />
+          </AssociationSet>
+          <AssociationSet Name="ClassInExamList" Association="Self.ClassInExamList">
+            <End Role="Class" EntitySet="Class" />
+            <End Role="ExamList" EntitySet="ExamList" />
+          </AssociationSet>
+          <AssociationSet Name="ClassroomInClass" Association="Self.ClassroomInClass">
+            <End Role="Classroom" EntitySet="Classroom" />
+            <End Role="Class" EntitySet="Class" />
+          </AssociationSet>
+          <AssociationSet Name="CourseInRubric" Association="Self.CourseInRubric">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="Rubric" EntitySet="Rubric" />
+          </AssociationSet>
+          <AssociationSet Name="CourseInSubject" Association="Self.CourseInSubject">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="Subject" EntitySet="Subject" />
+          </AssociationSet>
+          <AssociationSet Name="ExamTypeInExamList" Association="Self.ExamTypeInExamList">
+            <End Role="ExamType" EntitySet="ExamType" />
+            <End Role="ExamList" EntitySet="ExamList" />
+          </AssociationSet>
+          <AssociationSet Name="ExamTypeInExamScore" Association="Self.ExamTypeInExamScore">
+            <End Role="ExamType" EntitySet="ExamType" />
+            <End Role="ExamScore" EntitySet="ExamScore" />
+          </AssociationSet>
+          <AssociationSet Name="ProgramInUser" Association="Self.ProgramInUser">
+            <End Role="Program" EntitySet="Program" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="RoleInUser" Association="Self.RoleInUser">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="RubricInExamType" Association="Self.RubricInExamType">
+            <End Role="Rubric" EntitySet="Rubric" />
+            <End Role="ExamType" EntitySet="ExamType" />
+          </AssociationSet>
+          <AssociationSet Name="ScheduleInClass" Association="Self.ScheduleInClass">
+            <End Role="Schedule" EntitySet="Schedule" />
+            <End Role="Class" EntitySet="Class" />
+          </AssociationSet>
+          <AssociationSet Name="SubjectInClass" Association="Self.SubjectInClass">
+            <End Role="Subject" EntitySet="Subject" />
+            <End Role="Class" EntitySet="Class" />
+          </AssociationSet>
+          <AssociationSet Name="UserInClass" Association="Self.UserInClass">
+            <End Role="User" EntitySet="User" />
+            <End Role="Class" EntitySet="Class" />
+          </AssociationSet>
+          <AssociationSet Name="UserInClasslist" Association="Self.UserInClasslist">
+            <End Role="User" EntitySet="User" />
+            <End Role="ClassList" EntitySet="ClassList" />
+          </AssociationSet>
+          <AssociationSet Name="UserInExamScore" Association="Self.UserInExamScore">
+            <End Role="User" EntitySet="User" />
+            <End Role="ExamScore" EntitySet="ExamScore" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Capstone2Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FinalCapstoneEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Batches" EntityType="Capstone2Model.Batch" />
+          <EntitySet Name="Classes" EntityType="Capstone2Model.Class" />
+          <EntitySet Name="ClassLists" EntityType="Capstone2Model.ClassList" />
+          <EntitySet Name="Classrooms" EntityType="Capstone2Model.Classroom" />
+          <EntitySet Name="Courses" EntityType="Capstone2Model.Course" />
+          <EntitySet Name="ExamLists" EntityType="Capstone2Model.ExamList" />
+          <EntitySet Name="ExamScores" EntityType="Capstone2Model.ExamScore" />
+          <EntitySet Name="ExamTypes" EntityType="Capstone2Model.ExamType" />
+          <EntitySet Name="Programs" EntityType="Capstone2Model.Program" />
+          <EntitySet Name="Roles" EntityType="Capstone2Model.Role" />
+          <EntitySet Name="Rubrics" EntityType="Capstone2Model.Rubric" />
+          <EntitySet Name="Schedules" EntityType="Capstone2Model.Schedule" />
+          <EntitySet Name="Subjects" EntityType="Capstone2Model.Subject" />
+          <EntitySet Name="Users" EntityType="Capstone2Model.User" />
+          <AssociationSet Name="BatchInUser" Association="Capstone2Model.BatchInUser">
+            <End Role="Batch" EntitySet="Batches" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="ClassInClasslist" Association="Capstone2Model.ClassInClasslist">
+            <End Role="Class" EntitySet="Classes" />
+            <End Role="ClassList" EntitySet="ClassLists" />
+          </AssociationSet>
+          <AssociationSet Name="ClassInExamList" Association="Capstone2Model.ClassInExamList">
+            <End Role="Class" EntitySet="Classes" />
+            <End Role="ExamList" EntitySet="ExamLists" />
+          </AssociationSet>
+          <AssociationSet Name="ClassroomInClass" Association="Capstone2Model.ClassroomInClass">
+            <End Role="Classroom" EntitySet="Classrooms" />
+            <End Role="Class" EntitySet="Classes" />
+          </AssociationSet>
+          <AssociationSet Name="ScheduleInClass" Association="Capstone2Model.ScheduleInClass">
+            <End Role="Schedule" EntitySet="Schedules" />
+            <End Role="Class" EntitySet="Classes" />
+          </AssociationSet>
+          <AssociationSet Name="SubjectInClass" Association="Capstone2Model.SubjectInClass">
+            <End Role="Subject" EntitySet="Subjects" />
+            <End Role="Class" EntitySet="Classes" />
+          </AssociationSet>
+          <AssociationSet Name="UserInClass" Association="Capstone2Model.UserInClass">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Class" EntitySet="Classes" />
+          </AssociationSet>
+          <AssociationSet Name="UserInClasslist" Association="Capstone2Model.UserInClasslist">
+            <End Role="User" EntitySet="Users" />
+            <End Role="ClassList" EntitySet="ClassLists" />
+          </AssociationSet>
+          <AssociationSet Name="CourseInRubric" Association="Capstone2Model.CourseInRubric">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="Rubric" EntitySet="Rubrics" />
+          </AssociationSet>
+          <AssociationSet Name="CourseInSubject" Association="Capstone2Model.CourseInSubject">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="Subject" EntitySet="Subjects" />
+          </AssociationSet>
+          <AssociationSet Name="ExamTypeInExamList" Association="Capstone2Model.ExamTypeInExamList">
+            <End Role="ExamType" EntitySet="ExamTypes" />
+            <End Role="ExamList" EntitySet="ExamLists" />
+          </AssociationSet>
+          <AssociationSet Name="ExamTypeInExamScore" Association="Capstone2Model.ExamTypeInExamScore">
+            <End Role="ExamType" EntitySet="ExamTypes" />
+            <End Role="ExamScore" EntitySet="ExamScores" />
+          </AssociationSet>
+          <AssociationSet Name="UserInExamScore" Association="Capstone2Model.UserInExamScore">
+            <End Role="User" EntitySet="Users" />
+            <End Role="ExamScore" EntitySet="ExamScores" />
+          </AssociationSet>
+          <AssociationSet Name="RubricInExamType" Association="Capstone2Model.RubricInExamType">
+            <End Role="Rubric" EntitySet="Rubrics" />
+            <End Role="ExamType" EntitySet="ExamTypes" />
+          </AssociationSet>
+          <AssociationSet Name="ProgramInUser" Association="Capstone2Model.ProgramInUser">
+            <End Role="Program" EntitySet="Programs" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="RoleInUser" Association="Capstone2Model.RoleInUser">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Batch">
+          <Key>
+            <PropertyRef Name="batch_id" />
+          </Key>
+          <Property Name="batch_id" Type="Int32" Nullable="false" />
+          <Property Name="batch1" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="Capstone2Model.BatchInUser" FromRole="Batch" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Class">
+          <Key>
+            <PropertyRef Name="class_id" />
+          </Key>
+          <Property Name="class_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="classroom_id" Type="Int32" />
+          <Property Name="user_id" Type="Int32" />
+          <Property Name="subject_id" Type="Int32" />
+          <Property Name="schedule_id" Type="Int32" />
+          <Property Name="group_no" Type="Int32" />
+          <NavigationProperty Name="ClassLists" Relationship="Capstone2Model.ClassInClasslist" FromRole="Class" ToRole="ClassList" />
+          <NavigationProperty Name="ExamLists" Relationship="Capstone2Model.ClassInExamList" FromRole="Class" ToRole="ExamList" />
+          <NavigationProperty Name="Classroom" Relationship="Capstone2Model.ClassroomInClass" FromRole="Class" ToRole="Classroom" />
+          <NavigationProperty Name="Schedule" Relationship="Capstone2Model.ScheduleInClass" FromRole="Class" ToRole="Schedule" />
+          <NavigationProperty Name="Subject" Relationship="Capstone2Model.SubjectInClass" FromRole="Class" ToRole="Subject" />
+          <NavigationProperty Name="User" Relationship="Capstone2Model.UserInClass" FromRole="Class" ToRole="User" />
+        </EntityType>
+        <EntityType Name="ClassList">
+          <Key>
+            <PropertyRef Name="classlist_id" />
+          </Key>
+          <Property Name="classlist_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="class_id" Type="Int32" />
+          <Property Name="classlist_no" Type="Int32" />
+          <NavigationProperty Name="Class" Relationship="Capstone2Model.ClassInClasslist" FromRole="ClassList" ToRole="Class" />
+          <NavigationProperty Name="User" Relationship="Capstone2Model.UserInClasslist" FromRole="ClassList" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Classroom">
+          <Key>
+            <PropertyRef Name="classroom_id" />
+          </Key>
+          <Property Name="classroom_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="capacity" Type="Int32" />
+          <Property Name="room_number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Classes" Relationship="Capstone2Model.ClassroomInClass" FromRole="Classroom" ToRole="Class" />
+        </EntityType>
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="course_id" />
+          </Key>
+          <Property Name="course_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="courseno" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="coursetitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="coursedescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Rubrics" Relationship="Capstone2Model.CourseInRubric" FromRole="Course" ToRole="Rubric" />
+          <NavigationProperty Name="Subjects" Relationship="Capstone2Model.CourseInSubject" FromRole="Course" ToRole="Subject" />
+        </EntityType>
+        <EntityType Name="ExamList">
+          <Key>
+            <PropertyRef Name="examlist_id" />
+          </Key>
+          <Property Name="examlist_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="class_id" Type="Int32" />
+          <Property Name="examtype_id" Type="Int32" />
+          <NavigationProperty Name="Class" Relationship="Capstone2Model.ClassInExamList" FromRole="ExamList" ToRole="Class" />
+          <NavigationProperty Name="ExamType" Relationship="Capstone2Model.ExamTypeInExamList" FromRole="ExamList" ToRole="ExamType" />
+        </EntityType>
+        <EntityType Name="ExamScore">
+          <Key>
+            <PropertyRef Name="examscore_id" />
+          </Key>
+          <Property Name="examscore_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_id" Type="Int32" />
+          <Property Name="grade" Type="Int32" />
+          <Property Name="examtype_id" Type="Int32" />
+          <NavigationProperty Name="ExamType" Relationship="Capstone2Model.ExamTypeInExamScore" FromRole="ExamScore" ToRole="ExamType" />
+          <NavigationProperty Name="User" Relationship="Capstone2Model.UserInExamScore" FromRole="ExamScore" ToRole="User" />
+        </EntityType>
+        <EntityType Name="ExamType">
+          <Key>
+            <PropertyRef Name="examtype_id" />
+          </Key>
+          <Property Name="examtype_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="rubric_id" Type="Int32" />
+          <Property Name="exam_type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="perfect_score" Type="Int32" />
+          <Property Name="examtype_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ExamLists" Relationship="Capstone2Model.ExamTypeInExamList" FromRole="ExamType" ToRole="ExamList" />
+          <NavigationProperty Name="ExamScores" Relationship="Capstone2Model.ExamTypeInExamScore" FromRole="ExamType" ToRole="ExamScore" />
+          <NavigationProperty Name="Rubric" Relationship="Capstone2Model.RubricInExamType" FromRole="ExamType" ToRole="Rubric" />
+        </EntityType>
+        <EntityType Name="Program">
+          <Key>
+            <PropertyRef Name="program_id" />
+          </Key>
+          <Property Name="program_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="program1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="Capstone2Model.ProgramInUser" FromRole="Program" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="Capstone2Model.RoleInUser" FromRole="Role" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Rubric">
+          <Key>
+            <PropertyRef Name="rubric_id" />
+          </Key>
+          <Property Name="rubric_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="outputs" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="weight" Type="Int32" />
+          <Property Name="course_id" Type="Int32" />
+          <NavigationProperty Name="Course" Relationship="Capstone2Model.CourseInRubric" FromRole="Rubric" ToRole="Course" />
+          <NavigationProperty Name="ExamTypes" Relationship="Capstone2Model.RubricInExamType" FromRole="Rubric" ToRole="ExamType" />
+        </EntityType>
+        <EntityType Name="Schedule">
+          <Key>
+            <PropertyRef Name="schedule_id" />
+          </Key>
+          <Property Name="schedule_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="time_start" Type="DateTime" Precision="3" />
+          <Property Name="time_end" Type="DateTime" Precision="3" />
+          <Property Name="day" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Classes" Relationship="Capstone2Model.ScheduleInClass" FromRole="Schedule" ToRole="Class" />
+        </EntityType>
+        <EntityType Name="Subject">
+          <Key>
+            <PropertyRef Name="subject_id" />
+          </Key>
+          <Property Name="subject_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="course_id" Type="Int32" />
+          <NavigationProperty Name="Classes" Relationship="Capstone2Model.SubjectInClass" FromRole="Subject" ToRole="Class" />
+          <NavigationProperty Name="Course" Relationship="Capstone2Model.CourseInSubject" FromRole="Subject" ToRole="Course" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="f_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="l_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="idnumber" Type="Int64" />
+          <Property Name="password" Type="Int64" />
+          <Property Name="role_id" Type="Int32" />
+          <Property Name="program_id" Type="Int32" />
+          <Property Name="batch_id" Type="Int32" />
+          <NavigationProperty Name="Batch" Relationship="Capstone2Model.BatchInUser" FromRole="User" ToRole="Batch" />
+          <NavigationProperty Name="Classes" Relationship="Capstone2Model.UserInClass" FromRole="User" ToRole="Class" />
+          <NavigationProperty Name="ClassLists" Relationship="Capstone2Model.UserInClasslist" FromRole="User" ToRole="ClassList" />
+          <NavigationProperty Name="ExamScores" Relationship="Capstone2Model.UserInExamScore" FromRole="User" ToRole="ExamScore" />
+          <NavigationProperty Name="Program" Relationship="Capstone2Model.ProgramInUser" FromRole="User" ToRole="Program" />
+          <NavigationProperty Name="Role" Relationship="Capstone2Model.RoleInUser" FromRole="User" ToRole="Role" />
+        </EntityType>
+        <Association Name="BatchInUser">
+          <End Type="Capstone2Model.Batch" Role="Batch" Multiplicity="0..1" />
+          <End Type="Capstone2Model.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Batch">
+              <PropertyRef Name="batch_id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="batch_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClassInClasslist">
+          <End Type="Capstone2Model.Class" Role="Class" Multiplicity="0..1" />
+          <End Type="Capstone2Model.ClassList" Role="ClassList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Class">
+              <PropertyRef Name="class_id" />
+            </Principal>
+            <Dependent Role="ClassList">
+              <PropertyRef Name="class_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClassInExamList">
+          <End Type="Capstone2Model.Class" Role="Class" Multiplicity="0..1" />
+          <End Type="Capstone2Model.ExamList" Role="ExamList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Class">
+              <PropertyRef Name="class_id" />
+            </Principal>
+            <Dependent Role="ExamList">
+              <PropertyRef Name="class_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClassroomInClass">
+          <End Type="Capstone2Model.Classroom" Role="Classroom" Multiplicity="0..1" />
+          <End Type="Capstone2Model.Class" Role="Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Classroom">
+              <PropertyRef Name="classroom_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="classroom_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ScheduleInClass">
+          <End Type="Capstone2Model.Schedule" Role="Schedule" Multiplicity="0..1" />
+          <End Type="Capstone2Model.Class" Role="Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Schedule">
+              <PropertyRef Name="schedule_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="schedule_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SubjectInClass">
+          <End Type="Capstone2Model.Subject" Role="Subject" Multiplicity="0..1" />
+          <End Type="Capstone2Model.Class" Role="Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="subject_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="subject_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserInClass">
+          <End Type="Capstone2Model.User" Role="User" Multiplicity="0..1" />
+          <End Type="Capstone2Model.Class" Role="Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserInClasslist">
+          <End Type="Capstone2Model.User" Role="User" Multiplicity="1" />
+          <End Type="Capstone2Model.ClassList" Role="ClassList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="ClassList">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CourseInRubric">
+          <End Type="Capstone2Model.Course" Role="Course" Multiplicity="0..1" />
+          <End Type="Capstone2Model.Rubric" Role="Rubric" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="Rubric">
+              <PropertyRef Name="course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CourseInSubject">
+          <End Type="Capstone2Model.Course" Role="Course" Multiplicity="0..1" />
+          <End Type="Capstone2Model.Subject" Role="Subject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="Subject">
+              <PropertyRef Name="course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ExamTypeInExamList">
+          <End Type="Capstone2Model.ExamType" Role="ExamType" Multiplicity="0..1" />
+          <End Type="Capstone2Model.ExamList" Role="ExamList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamType">
+              <PropertyRef Name="examtype_id" />
+            </Principal>
+            <Dependent Role="ExamList">
+              <PropertyRef Name="examtype_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ExamTypeInExamScore">
+          <End Type="Capstone2Model.ExamType" Role="ExamType" Multiplicity="0..1" />
+          <End Type="Capstone2Model.ExamScore" Role="ExamScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamType">
+              <PropertyRef Name="examtype_id" />
+            </Principal>
+            <Dependent Role="ExamScore">
+              <PropertyRef Name="examtype_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserInExamScore">
+          <End Type="Capstone2Model.User" Role="User" Multiplicity="0..1" />
+          <End Type="Capstone2Model.ExamScore" Role="ExamScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="ExamScore">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RubricInExamType">
+          <End Type="Capstone2Model.Rubric" Role="Rubric" Multiplicity="0..1" />
+          <End Type="Capstone2Model.ExamType" Role="ExamType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rubric">
+              <PropertyRef Name="rubric_id" />
+            </Principal>
+            <Dependent Role="ExamType">
+              <PropertyRef Name="rubric_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProgramInUser">
+          <End Type="Capstone2Model.Program" Role="Program" Multiplicity="0..1" />
+          <End Type="Capstone2Model.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="program_id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="program_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RoleInUser">
+          <End Type="Capstone2Model.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="Capstone2Model.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Capstone2ModelStoreContainer" CdmEntityContainer="FinalCapstoneEntities">
+          <EntitySetMapping Name="Batches">
+            <EntityTypeMapping TypeName="Capstone2Model.Batch">
+              <MappingFragment StoreEntitySet="Batch">
+                <ScalarProperty Name="batch1" ColumnName="batch" />
+                <ScalarProperty Name="batch_id" ColumnName="batch_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Classes">
+            <EntityTypeMapping TypeName="Capstone2Model.Class">
+              <MappingFragment StoreEntitySet="Class">
+                <ScalarProperty Name="group_no" ColumnName="group_no" />
+                <ScalarProperty Name="schedule_id" ColumnName="schedule_id" />
+                <ScalarProperty Name="subject_id" ColumnName="subject_id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="classroom_id" ColumnName="classroom_id" />
+                <ScalarProperty Name="class_id" ColumnName="class_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClassLists">
+            <EntityTypeMapping TypeName="Capstone2Model.ClassList">
+              <MappingFragment StoreEntitySet="ClassList">
+                <ScalarProperty Name="classlist_no" ColumnName="classlist_no" />
+                <ScalarProperty Name="class_id" ColumnName="class_id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="classlist_id" ColumnName="classlist_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Classrooms">
+            <EntityTypeMapping TypeName="Capstone2Model.Classroom">
+              <MappingFragment StoreEntitySet="Classroom">
+                <ScalarProperty Name="room_number" ColumnName="room_number" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="classroom_id" ColumnName="classroom_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Courses">
+            <EntityTypeMapping TypeName="Capstone2Model.Course">
+              <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="coursedescription" ColumnName="coursedescription" />
+                <ScalarProperty Name="coursetitle" ColumnName="coursetitle" />
+                <ScalarProperty Name="courseno" ColumnName="courseno" />
+                <ScalarProperty Name="course_id" ColumnName="course_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExamLists">
+            <EntityTypeMapping TypeName="Capstone2Model.ExamList">
+              <MappingFragment StoreEntitySet="ExamList">
+                <ScalarProperty Name="examtype_id" ColumnName="examtype_id" />
+                <ScalarProperty Name="class_id" ColumnName="class_id" />
+                <ScalarProperty Name="examlist_id" ColumnName="examlist_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExamScores">
+            <EntityTypeMapping TypeName="Capstone2Model.ExamScore">
+              <MappingFragment StoreEntitySet="ExamScore">
+                <ScalarProperty Name="examtype_id" ColumnName="examtype_id" />
+                <ScalarProperty Name="grade" ColumnName="grade" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="examscore_id" ColumnName="examscore_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExamTypes">
+            <EntityTypeMapping TypeName="Capstone2Model.ExamType">
+              <MappingFragment StoreEntitySet="ExamType">
+                <ScalarProperty Name="examtype_name" ColumnName="examtype_name" />
+                <ScalarProperty Name="perfect_score" ColumnName="perfect_score" />
+                <ScalarProperty Name="exam_type" ColumnName="exam_type" />
+                <ScalarProperty Name="rubric_id" ColumnName="rubric_id" />
+                <ScalarProperty Name="examtype_id" ColumnName="examtype_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Programs">
+            <EntityTypeMapping TypeName="Capstone2Model.Program">
+              <MappingFragment StoreEntitySet="Program">
+                <ScalarProperty Name="program1" ColumnName="program" />
+                <ScalarProperty Name="program_id" ColumnName="program_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="Capstone2Model.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="user_type" ColumnName="user_type" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rubrics">
+            <EntityTypeMapping TypeName="Capstone2Model.Rubric">
+              <MappingFragment StoreEntitySet="Rubric">
+                <ScalarProperty Name="course_id" ColumnName="course_id" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+                <ScalarProperty Name="outputs" ColumnName="outputs" />
+                <ScalarProperty Name="rubric_id" ColumnName="rubric_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Schedules">
+            <EntityTypeMapping TypeName="Capstone2Model.Schedule">
+              <MappingFragment StoreEntitySet="Schedule">
+                <ScalarProperty Name="day" ColumnName="day" />
+                <ScalarProperty Name="time_end" ColumnName="time_end" />
+                <ScalarProperty Name="time_start" ColumnName="time_start" />
+                <ScalarProperty Name="schedule_id" ColumnName="schedule_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subjects">
+            <EntityTypeMapping TypeName="Capstone2Model.Subject">
+              <MappingFragment StoreEntitySet="Subject">
+                <ScalarProperty Name="course_id" ColumnName="course_id" />
+                <ScalarProperty Name="subject_id" ColumnName="subject_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="Capstone2Model.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="batch_id" ColumnName="batch_id" />
+                <ScalarProperty Name="program_id" ColumnName="program_id" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="idnumber" ColumnName="idnumber" />
+                <ScalarProperty Name="l_name" ColumnName="l_name" />
+                <ScalarProperty Name="f_name" ColumnName="f_name" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

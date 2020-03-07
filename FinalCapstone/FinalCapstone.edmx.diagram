@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d91b6111d3b74c2f9e65b1153e25d31e" Name="Diagram1" ZoomLevel="59">
+        <EntityTypeShape EntityType="Capstone2Model.Batch" Width="1.5" PointX="0.75" PointY="1.5" />
+        <EntityTypeShape EntityType="Capstone2Model.Class" Width="1.5" PointX="5.25" PointY="3.75" />
+        <EntityTypeShape EntityType="Capstone2Model.ClassList" Width="1.5" PointX="7.5" PointY="7.375" />
+        <EntityTypeShape EntityType="Capstone2Model.Classroom" Width="1.5" PointX="3" PointY="8.5" />
+        <EntityTypeShape EntityType="Capstone2Model.Course" Width="1.5" PointX="0.75" PointY="11" />
+        <EntityTypeShape EntityType="Capstone2Model.ExamList" Width="1.5" PointX="7.5" PointY="1.5" />
+        <EntityTypeShape EntityType="Capstone2Model.ExamScore" Width="1.5" PointX="8.25" PointY="4.375" />
+        <EntityTypeShape EntityType="Capstone2Model.ExamType" Width="1.5" PointX="5.25" PointY="14.25" />
+        <EntityTypeShape EntityType="Capstone2Model.Program" Width="1.5" PointX="0.75" PointY="7.875" />
+        <EntityTypeShape EntityType="Capstone2Model.Role" Width="1.5" PointX="0.75" PointY="4.625" />
+        <EntityTypeShape EntityType="Capstone2Model.Rubric" Width="1.5" PointX="3" PointY="14.375" />
+        <EntityTypeShape EntityType="Capstone2Model.Schedule" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="Capstone2Model.Subject" Width="1.5" PointX="3" PointY="11.25" />
+        <EntityTypeShape EntityType="Capstone2Model.User" Width="1.5" PointX="3" PointY="3.625" />
+        <AssociationConnector Association="Capstone2Model.BatchInUser" />
+        <AssociationConnector Association="Capstone2Model.ClassInClasslist" />
+        <AssociationConnector Association="Capstone2Model.ClassInExamList" />
+        <AssociationConnector Association="Capstone2Model.ClassroomInClass" />
+        <AssociationConnector Association="Capstone2Model.ScheduleInClass" />
+        <AssociationConnector Association="Capstone2Model.SubjectInClass" />
+        <AssociationConnector Association="Capstone2Model.UserInClass" />
+        <AssociationConnector Association="Capstone2Model.UserInClasslist" />
+        <AssociationConnector Association="Capstone2Model.CourseInRubric" />
+        <AssociationConnector Association="Capstone2Model.CourseInSubject" />
+        <AssociationConnector Association="Capstone2Model.ExamTypeInExamList" />
+        <AssociationConnector Association="Capstone2Model.ExamTypeInExamScore" />
+        <AssociationConnector Association="Capstone2Model.UserInExamScore" />
+        <AssociationConnector Association="Capstone2Model.RubricInExamType" />
+        <AssociationConnector Association="Capstone2Model.ProgramInUser" />
+        <AssociationConnector Association="Capstone2Model.RoleInUser" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

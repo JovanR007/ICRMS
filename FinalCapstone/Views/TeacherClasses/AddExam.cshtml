@@ -1,0 +1,79 @@
+﻿@using FinalCapstone.Models;
+
+
+@{
+    ViewBag.Title = "AddExam";
+    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+      
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <input type="button" id="btnAdd" value="CLICK TO ADD EXAM" style=" float:right" />
+        <div class="col-md-10">
+
+            @Html.DropDownList("rub_id", null, htmlAttributes: new { @class = "form-control" })
+            Perfect Score:<br>
+            <input type="text" name="perfectscore" id="perfectscore"><br>
+            Exam Name:<br>
+            <input type="text" name="examname" id="examname"><br>
+        </div>
+ 
+        
+    </div>
+    </div>
+
+}
+       
+        <div>
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+
+        <script src="~/Scripts/json2.js"></script>
+        <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript">
+    $(document).ready(function () {
+
+
+          $("body").on("click", "#btnAdd", function () {
+            //Loop through the Table rows and build a JSON array.
+            var examtypes = new Array();
+              var row = $(this).closest('tr');
+              var examtype = {};
+              examtype.exam_type = $("#rub_id option:selected").text();
+              examtype.examtype_name = $("input#examname").val();
+              examtype.perfect_score = $("input#perfectscore").val();
+               
+              var elementId = '@ViewBag.id';
+                  examtype.rubric_id =elementId;
+                  examtypes.push(examtype);
+
+
+            //Send the JSON array to Controller using AJAX.
+            $.ajax({
+                type: "POST",
+                url: '/TeacherClasses/AddExamType',
+                data: JSON.stringify(examtypes),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function () {
+                    alert('success');
+                },
+
+                error: function () {
+                    alert('fail');
+                }
+            });
+        });
+
+
+    });
+
+        </script>

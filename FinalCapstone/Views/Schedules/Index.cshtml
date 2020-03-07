@@ -1,0 +1,45 @@
+﻿@model IEnumerable<FinalCapstone.Schedule>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.time_start)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.time_end)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.day)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.time_start)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.time_end)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.day)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.schedule_id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.schedule_id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.schedule_id })
+        </td>
+    </tr>
+}
+
+</table>

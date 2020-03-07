@@ -1,0 +1,47 @@
+﻿@model IEnumerable<FinalCapstone.Subject>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Course Number
+        </th>
+        <th>
+            Course Title
+        </th>
+        <th>
+            Course Description
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Course.courseno)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Course.coursetitle)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Course.coursedescription)
+    </td>
+    <td>
+        
+        <button onclick="location.href='@Url.Action("Edit","Subjects", new { id = item.subject_id})'">Edit</button>
+        <button onclick="location.href='@Url.Action("Delete","Subjects", new { id =item.subject_id})'">Delete</button>
+        <button onclick="location.href='@Url.Action("Create","Rubrics", new { id = item.Course.course_id})'">Create Rubrics</button>
+    </td>
+</tr>
+}
+
+</table>

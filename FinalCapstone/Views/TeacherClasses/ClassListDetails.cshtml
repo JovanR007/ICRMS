@@ -1,0 +1,189 @@
+﻿@model FinalCapstone.Models.getClassListResponse
+@{
+    ViewBag.Title = "ClassListDetails";
+    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/Teachercss/bootstrap.min.css" />
+</head>
+<body>
+    <h2>Class List Details - @ViewBag.coursetitle</h2>
+    <p>
+        <button class="btn btn-primary addstud" data-id="@ViewBag.userlogin">Add Student</button>
+    </p>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-responsive" id="tbl_classeslistdtl" style="width:100%">
+                <thead class="headr-color">
+                    <tr>
+                        <th>ID Number</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (dynamic item in Model._data)
+                        {
+                            <tr align="center">
+                                <td>@item.idnumber</td>
+                                <td>@item.l_name</td>
+                                <td>@item.f_name</td>
+                                <td>
+                                    <button class="btn btn-primary delclasslst" data-classid="@item.classlist_id">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="row">
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+    @section ModalSection{
+
+        <div id="AddStudModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*<button type="button" class="close" data-dismiss="modal">X</button>*@
+                        <h4 class="modal-title" id="attDtltitle">Add Student</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="">ID Number <b style="color: red;">*</b></label>
+                                <select id="selUser" class="selectpicker form-control">
+                                    @{
+                                        //<option value=""></option>
+                                        foreach (var x in Model._user)
+                                        {
+                                            <option value="@x.user_id">@x.idnumber</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="">Last Name <b style="color: red;"></b></label>
+                                <input class="form-control mandatory" name="LastName" readonly style="background-color: #eee;" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="">First Name <b style="color: red;"></b></label>
+                                <input class="form-control mandatory" name="FirstName" readonly style="background-color: #eee;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-addstud" data-classid="@ViewBag.classid"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <style>
+        .numval {
+            text-align: right;
+        }
+    </style>
+    <script src="~/Scripts/json2.js"> </script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"> </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetUserName();
+        });
+
+        $(document).on('click', '.addstud', function () {
+            $('#AddStudModal').modal('show');
+        });
+
+        $(document).on('change', '#selUser', function () {
+            GetUserName()
+        });
+
+        $(document).on('click', '.btn-addstud', function () {
+            var classid = $(this).attr('data-classid');
+            var userid = $('#selUser').val();
+            var userlogin = $('.addstud').attr('data-id');
+
+            if (userid != '') {
+                $.ajax({
+                    type: "POST",
+                    url: '/TeacherClasses/AddStudent',
+                    type: "post",
+                    dataType: 'json',
+                    data: { 'class_id': classid, 'user_id': userid, 'userlogin': userlogin },
+                    success: function (datax) {
+                        if (datax.respcode == 1) {
+                            alert('success');
+                            location.reload();
+                        }
+                        else {
+                            alert('fail');
+                        }
+                    }
+                });
+            }
+
+        });
+
+        $(document).on('click', '.delclasslst', function () {
+            var classid = $(this).attr('data-classid');
+            if (classid != '') {
+                $.ajax({
+                    type: "POST",
+                    url: '/TeacherClasses/DeleteClassList',
+                    type: "post",
+                    dataType: 'json',
+                    data: { 'classlist_id': classid },
+                    success: function (datax) {
+                        if (datax.respcode == 1) {
+                            alert('success');
+                            location.reload();
+                        }
+                        else {
+                            alert('fail');
+                        }
+                    }
+                });
+            }
+        });
+
+        function GetUserName() {
+            var user = $('#selUser').val();
+            if (user != null && user != '') {
+                $.ajax({
+                    type: "POST",
+                    url: '/TeacherClasses/GetUserList',
+                    type: "post",
+                    dataType: 'json',
+                    data: { 'userid': user },
+                    success: function (datax) {
+                        if (datax.respcode == 1) {
+                            $('input[name=LastName]').val(datax._data[0].l_name);
+                            $('input[name=FirstName]').val(datax._data[0].f_name);
+                        }
+                        else {
+                            alert('fail');
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

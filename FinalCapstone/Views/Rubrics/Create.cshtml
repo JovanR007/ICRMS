@@ -1,0 +1,113 @@
+﻿@model FinalCapstone.Rubric
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jQuery Add / Remove Table Rows</title>
+    <style>
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #cdcdcd;
+        }
+
+            table th, table td {
+                padding: 5px;
+                text-align: left;
+            }
+    </style>
+</head>
+<body>  
+    <form>
+        <input type="text" id="output" placeholder="Output">
+        <input type="text" id="weight" placeholder="Weight">
+        <input type="button" class="add-row" value="Add Row">
+    </form>
+    <table id="tblRubric">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Output</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+    <button type="button" class="delete-row">Delete Row</button>
+
+    <button type="button" id="btnSave" value="Create">Save</button>
+</body>
+</html>
+@Html.ActionLink("Back To List", "Index", "Rubrics")
+<script src="~/Scripts/json2.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".add-row").click(function () {
+            var output = $("#output").val();
+            var weight = $("#weight").val();
+            var markup = "<tr><td><input type='checkbox' name='record'></td><td>" + output + "</td><td>" + weight + "</td></tr>";
+            $("table tbody").append(markup);
+        });
+
+        // Find and remove selected table rows
+        $(".delete-row").click(function () {
+            $("table tbody").find('input[name="record"]').each(function () {
+                if ($(this).is(":checked")) {
+                    $(this).parents("tr").remove();
+                }
+            });
+        });
+         
+        $("body").on("click", "#btnSave", function () {
+            //Loop through the Table rows and build a JSON array.          
+                var url = window.location.pathname;
+                var id = url.substring(url.lastIndexOf('/') + 1);
+
+           
+            var rubrics = new Array();
+            $("#tblRubric tbody tr").each(function () {                                           
+                var row = $(this);
+                var rubric = {};
+                rubric.outputs = row.find("td").eq(1).html();
+                rubric.weight = row.find("td").eq(2).html();
+                rubric.course_id =id;
+                rubrics.push(rubric);
+            });
+            console.log(url);
+             
+            //Send the JSON array to Controller using AJAX.
+            $.ajax({
+                type: "POST",
+                url: '/Rubrics/Create',
+                data:JSON.stringify(rubrics),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function () {
+                    alert('success');
+                },
+
+              
+            });
+             console.log(1);
+
+        });
+    });
+
+</script>
+
+

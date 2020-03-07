@@ -1,0 +1,89 @@
+﻿@model IEnumerable<FinalCapstone.Class>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<input id="myInput" type="text" placeholder="Search..">
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table" id="myTable">
+    <tr>
+        <th>
+            Course Code
+        </th>
+        <th>
+            Subject Name
+        </th>
+        <th>
+            Room Number
+        </th>
+        <th>
+            Time Start
+        </th>
+        <th>
+            Time End
+        </th>
+
+        <th>
+            Day
+        </th>
+        <th>
+            Group Number
+        </th>
+        <th>
+            Professor
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Subject.Course.courseno)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Subject.Course.coursetitle)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Classroom.room_number)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Schedule.time_start)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Schedule.time_end)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Schedule.day)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.group_no)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.User.f_name)
+    </td>
+    <td>
+        <button onclick="location.href='@Url.Action("Edit","Classes", new { id =item.class_id})'">Edit</button>
+        <button onclick="location.href='@Url.Action("Delete","Classes", new { id =item.class_id})'">Delete</button>
+
+    </td>
+</tr>
+}
+
+</table>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
