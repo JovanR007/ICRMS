@@ -33,66 +33,80 @@
     <link rel="stylesheet" type="text/css" href="~/Content/Logincss/main.css">
     <!--===============================================================================================-->
 </head>
-<body>   
-        <div class="limiter">
-            <div class="container-login100">
-                <div class="wrap-login100">
-                    <div class="login100-form-title" style="background-image: url('/images/Loginimages/bg-01.jpg');">
-                        <span class="login100-form-title-1">
-                            Sign In
-                        </span>
-                    </div>
-                    @using (Html.BeginForm())
+<body>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <div class="login100-form-title" style="background-image: url('/images/Loginimages/bg-01.jpg');">
+                    <span class="login100-form-title-1">
+                        Sign In
+                    </span>
+                </div>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.AntiForgeryToken()
+                    if (TempData["message"] == "error")
                     {
-                        @Html.AntiForgeryToken()
-                        if (ViewBag.message == null && ViewBag.triedOnce == "Yes")
-                        {
+                        <h4 align="center" style="color:red">Username or Password is Incorrect</h4>
 
-                            <h4>Username or Password Incorrect, please try again. </h4>
+                    }
+                    <form action="" method="post" class="login100-form validate-form">
+                        <div class="wrap-input100 validate-input m-b-26" data-validate="Username is required">
+                            <span class="label-input100">Username</span>
+                            @Html.TextBoxFor(model => model.idnumber, new { placeholder = "ID Number", @class = "input100" })
+                            <span class="focus-input100"></span>
+                        </div>
 
-                        }                                              
-                            <form action="" method="post" class="login100-form validate-form">
-                                <div class="wrap-input100 validate-input m-b-26" data-validate="Username is required">
-                                    <span class="label-input100">Username</span>                                  
-                                    @Html.TextBoxFor(model => model.idnumber, new {placeholder = "ID Number",@class ="input100" })
-                                    <span class="focus-input100"></span>
-                                </div>
+                        <div class="wrap-input100 validate-input m-b-18" data-validate="Password is required">
+                            <span class="label-input100">Password</span>
+                            @Html.PasswordFor(model => model.password, new { placeholder = "Password", @class = "input100" })
+                            <span class="focus-input100"></span>
+                        </div>
+                        <div align="center">
+                            <button class="login100-form-btn">
+                                Login
+                            </button>
+                        </div>
 
-                                <div class="wrap-input100 validate-input m-b-18" data-validate="Password is required">
-                                    <span class="label-input100">Password</span>
-                                     @Html.PasswordFor(model => model.password, new {placeholder = "Password",@class ="input100" })
-                                    <span class="focus-input100"></span>
-                                </div>                            
-                                <div class="container-login100-form-btn">
-                                    <button class="login100-form-btn">
-                                        Login
-                                    </button>
-                                </div>
+                    </form>
 
-                            </form>
+                }
 
-                            }
-
-                    </div>
             </div>
         </div>
+    </div>
 
-        <!--===============================================================================================-->
-        <script src="~/Scripts/Loginvendorvendor/jquery/jquery-3.2.1.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="~/Scripts/Loginvendorvendor/animsition/js/animsition.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="~/Scripts/Loginvendor/bootstrap/js/popper.js"></script>
-        <script src="~/Scripts/Loginvendor/bootstrap/js/bootstrap.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="~/Scripts/Loginvendor/select2/select2.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="~/Scripts/Loginvendor/daterangepicker/moment.min.js"></script>
-        <script src="~/Scripts/Loginvendor/daterangepicker/daterangepicker.js"></script>
-        <!--===============================================================================================-->
-        <script src="~/Scripts/Loginvendor/countdowntime/countdowntime.js"></script>
-        <!--===============================================================================================-->
-        <script src="~/Scripts/Loginjs/main.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Scripts/Loginvendorvendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Scripts/Loginvendorvendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Scripts/Loginvendor/bootstrap/js/popper.js"></script>
+    <script src="~/Scripts/Loginvendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Scripts/Loginvendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Scripts/Loginvendor/daterangepicker/moment.min.js"></script>
+    <script src="~/Scripts/Loginvendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Scripts/Loginvendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Scripts/Loginjs/main.js"></script>
+    <SCRIPT type="text/javascript">
+        window.history.forward();
+        function noBack() {
+            window.history.forward();
+            
 
-    </body>
+        }
+    </SCRIPT>
+
+    <BODY onload="noBack();"
+          onpageshow="if (event.persisted) noBack();" onunload="">
+
+    </BODY>
+
+
 </html>
+

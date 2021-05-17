@@ -18,6 +18,9 @@ namespace FinalCapstone
         public Nullable<int> user_id { get; set; }
         public Nullable<int> grade { get; set; }
         public Nullable<int> examtype_id { get; set; }
+        public Nullable<int> class_id { get; set; }
+        public Nullable<int> user_login { get; set; }
+        public Nullable<System.DateTime> user_date { get; set; }
     
         public virtual ExamType ExamType { get; set; }
         public virtual User User { get; set; }

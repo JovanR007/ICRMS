@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="~/Content/css/ionicons.min.css">
 
     <link rel="stylesheet" href="~/Content/css/flaticon.css">
-    <link rel="stylesheet" href="~/Content/css/icomoon.css">
+    @*<link rel="stylesheet" href="~/Content/css/icomoon.css">*@
     <link rel="stylesheet" href="~/Content/css/style.css">
 
     @RenderSection("head", false)
@@ -33,12 +33,9 @@
                     <div class="row d-flex">
                         <div class="col-md pr-4 d-flex topper align-items-center">
                             <div class="icon bg-secondary mr-2 d-flex justify-content-center align-items-center"><span class="icon-paper-plane"></span></div>
-                            <span class="text">youremail@email.com</span>
+                            <span class="text"><b>ADMIN</b></span>
                         </div>
-                        <div class="col-md pr-4 d-flex topper align-items-center">
-                            <div class="icon bg-tertiary mr-2 d-flex justify-content-center align-items-center"><span class="icon-phone2"></span></div>
-                            <span class="text">+ 1235 2355 98</span>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
@@ -56,7 +53,7 @@
                     <li class="nav-item"><a href="@Url.Action("Index","Subjects")" class="nav-link">Subjects</a></li>
                     <li class="nav-item"><a href="@Url.Action("Index","Users")" class="nav-link">Users</a></li>
                     <li class="nav-item"><a href="@Url.Action("Index","Classes")" class="nav-link">Classes</a></li>               
-                    <li class="nav-item"><a href="@Url.Action("Index","Classlists")" class="nav-link">Enroll</a></li>
+                   
                     <li class="nav-item"><a href="@Url.Action("Logout","Login")" class="nav-link">Logout</a></li>
 
                 </ul>

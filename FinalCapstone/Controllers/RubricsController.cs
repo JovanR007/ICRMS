@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalCapstone;
+using FinalCapstone.Models;
 
 namespace FinalCapstone.Controllers
 {
@@ -15,10 +16,13 @@ namespace FinalCapstone.Controllers
         private FinalCapstoneEntities db = new FinalCapstoneEntities();
 
         // GET: Rubrics
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
             var rubrics = db.Rubrics.Include(r => r.Course);
-            return View(rubrics.ToList());
+            List<Rubric> lstRubric = db.Rubrics.Where(x => x.course_id == id).ToList();
+            ViewBag.CourseId = id;
+
+            return View(lstRubric);          
         }
 
         // GET: Rubrics/Details/5
@@ -37,46 +41,32 @@ namespace FinalCapstone.Controllers
         }
 
         // GET: Rubrics/Create
-        public ActionResult Create()
+        public ActionResult Create(int? id)
         {
-          
+            // List<Rubric> lstRubric = db.Rubrics.Where(x => x.course_id == id).ToList();
+            ViewBag.CourseId = id;
+            TempData["cid"] = ViewBag.CourseId;
             return View();
         }
 
-        // POST: Rubrics/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Rubrics/Create       
         [HttpPost]
-        public JsonResult Create(List<Rubric> rubrics)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(RubricCreation model)
         {
-            //Check for NULL.
-            if (rubrics == null)
-            {
-                rubrics = new List<Rubric>();
-                Rubric rb = new Rubric();
-                rb.outputs = "1";
-                rb.weight = 1;
-                rb.course_id = 6;
-                db.Rubrics.Add(rb);
-            }
-            //Loop and insert records.
-            foreach (Rubric rubric in rubrics)
-            {
-               
-                db.Rubrics.Add(rubric);
+            model.course_id =(int)TempData["cid"];
+            Rubric rub = new Rubric();
+            rub.outputs = model.outputs;
+            rub.weight = model.weight;
+            rub.course_id = model.course_id;
+            db.Rubrics.Add(rub);
+            db.SaveChanges();
 
-
-            }
-            int insertedRecords = db.SaveChanges();
-
-
-
-           
-            return Json(insertedRecords);
+            return RedirectToAction("Index", new { id = model.course_id});         
         }
 
         // GET: Rubrics/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, int? courseid)
         {
             if (id == null)
             {
@@ -87,6 +77,8 @@ namespace FinalCapstone.Controllers
             {
                 return HttpNotFound();
             }
+            int? cid = courseid;
+            ViewBag.CourseId = cid;
             ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", rubric.course_id);
             return View(rubric);
         }
@@ -96,20 +88,26 @@ namespace FinalCapstone.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "rubric_id,outputs,weight,course_id")] Rubric rubric)
+        public ActionResult Edit(RubricEdit modelRubric, int? courseid)
         {
+            int? cid = courseid;
             if (ModelState.IsValid)
             {
-                db.Entry(rubric).State = EntityState.Modified;
+                var rub = db.Rubrics.Find(modelRubric.rubric_id);
+                rub.course_id = cid;
+                rub.outputs = modelRubric.outputs;
+                rub.weight = modelRubric.weight;
+                
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { id = cid });
             }
-            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", rubric.course_id);
-            return View(rubric);
+          
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", modelRubric.course_id);
+            return RedirectToAction("Index", new { id = cid });
         }
 
         // GET: Rubrics/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id , int? courseid)
         {
             if (id == null)
             {
@@ -120,18 +118,23 @@ namespace FinalCapstone.Controllers
             {
                 return HttpNotFound();
             }
+            int? cid = courseid;
+            ViewBag.test = cid;
+            ViewData["test"] = ViewBag.test;
             return View(rubric);
         }
 
         // POST: Rubrics/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id, int? courseid )
         {
-            Rubric rubric = db.Rubrics.Find(id);
+            int? cid = courseid;
+            Rubric rubric = db.Rubrics.Find(id);          
             db.Rubrics.Remove(rubric);
             db.SaveChanges();
-            return RedirectToAction("Index");
+          
+            return RedirectToAction("Index", new {id =cid});
         }
 
         protected override void Dispose(bool disposing)

@@ -113,18 +113,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-fifth">
-                    <div class="media block-6 d-block text-center">
-                        <div class="icon d-flex justify-content-center align-items-center">
-                            <span class="flaticon-diploma"></span>
-                        </div>
-                        <div class="media-body p-2 mt-3">
-                            <h3 class="heading">Student Enrollment</h3>
-                            <p>Enroll a student in a class.</p>
-                            <a href="@Url.Action("StudentEnrollment","Classlists")">Click here</a>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
     </section>
@@ -156,5 +145,44 @@
     <script src="~/Scripts/js/google-map.js"></script>
     <script src="~/Scripts/js/main.js"></script>
 
+    <script>
+        (function (global) {
+
+            if (typeof (global) === "undefined") {
+                throw new Error("window is undefined");
+            }
+
+            var _hash = "!";
+            var noBackPlease = function () {
+                global.location.href += "#";
+
+                // Making sure we have the fruit available for juice (^__^)
+                global.setTimeout(function () {
+                    global.location.href += "!";
+                }, 50);
+            };
+
+            global.onhashchange = function () {
+                if (global.location.hash !== _hash) {
+                    global.location.hash = _hash;
+                }
+            };
+
+            global.onload = function () {
+                noBackPlease();
+
+                // Disables backspace on page except on input fields and textarea..
+                document.body.onkeydown = function (e) {
+                    var elm = e.target.nodeName.toLowerCase();
+                    if (e.which === 8 && (elm !== 'input' && elm !== 'textarea')) {
+                        e.preventDefault();
+                    }
+                    // Stopping the event bubbling up the DOM tree...
+                    e.stopPropagation();
+                };
+            }
+        })(window);
+
+    </script>
 </body>
 </html>

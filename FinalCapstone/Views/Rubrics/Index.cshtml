@@ -2,13 +2,13 @@
 
 @{
     ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", new { id = @ViewBag.CourseId })
 </p>
 <table class="table">
     <tr>
@@ -24,23 +24,24 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.outputs)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.weight)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Course.courseno)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.rubric_id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.rubric_id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.rubric_id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.outputs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.courseno)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.rubric_id, courseid = item.course_id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.rubric_id, courseid = item.course_id })
+            </td>
+        </tr>
+    }
 
 </table>
+@Html.ActionLink("Back to List", "Index", "Subjects")

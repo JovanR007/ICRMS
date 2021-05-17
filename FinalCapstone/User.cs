@@ -30,6 +30,9 @@ namespace FinalCapstone
         public Nullable<int> role_id { get; set; }
         public Nullable<int> program_id { get; set; }
         public Nullable<int> batch_id { get; set; }
+        public string email { get; set; }
+        public Nullable<int> user_login { get; set; }
+        public Nullable<System.DateTime> user_date { get; set; }
     
         public virtual Batch Batch { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -34,7 +34,7 @@
                                 <td>@item.l_name</td>
                                 <td>@item.f_name</td>
                                 <td>
-                                    <button class="btn btn-primary delclasslst" data-classid="@item.classlist_id">Delete</button>
+                                      <button class="btn btn-primary delclasslst" data-id="@item.idnumber" data-classid="@ViewBag.classid" >Delete</button>
                                 </td>
                             </tr>
                         }
@@ -44,9 +44,7 @@
 
         </div>
     </div>
-    <div class="row">
-        @Html.ActionLink("Back to List", "Index")
-    </div>
+   
     @section ModalSection{
 
         <div id="AddStudModal" class="modal fade" role="dialog">
@@ -66,7 +64,7 @@
                                         //<option value=""></option>
                                         foreach (var x in Model._user)
                                         {
-                                            <option value="@x.user_id">@x.idnumber</option>
+                                            <option value="@x.user_id">@x.idnumber @x.l_name @x.f_name </option>
                                         }
                                     }
                                 </select>
@@ -103,6 +101,9 @@
     <script src="~/Scripts/json2.js"> </script>
     <script src="~/Scripts/jquery-3.3.1.min.js"> </script>
     <script type="text/javascript">
+
+
+
         $(document).ready(function () {
             GetUserName();
         });
@@ -119,6 +120,11 @@
             var classid = $(this).attr('data-classid');
             var userid = $('#selUser').val();
             var userlogin = $('.addstud').attr('data-id');
+
+
+            if (userid == '') {
+                alert('Student ID is empty.');
+            }
 
             if (userid != '') {
                 $.ajax({
@@ -143,13 +149,14 @@
 
         $(document).on('click', '.delclasslst', function () {
             var classid = $(this).attr('data-classid');
+            var userid = $(this).attr('data-id');
             if (classid != '') {
                 $.ajax({
                     type: "POST",
                     url: '/TeacherClasses/DeleteClassList',
                     type: "post",
                     dataType: 'json',
-                    data: { 'classlist_id': classid },
+                    data: { 'user_id': userid, 'classlist_id': classid },
                     success: function (datax) {
                         if (datax.respcode == 1) {
                             alert('success');

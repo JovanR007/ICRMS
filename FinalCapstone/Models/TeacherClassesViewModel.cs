@@ -13,17 +13,21 @@ namespace FinalCapstone.Models
     public class TeacherClassesModel
     {
         IDbConnection _db = new SqlConnection(ConfigurationManager.ConnectionStrings["Capstone"].ConnectionString);
-        
-        public TeacherClasses_Component GetClassesByUser(int? idno)
+ 
+
+        public TeacherClasses_Component GetClassesByUser(int? idno, int? role)
         {
             TeacherClasses_Component cls = new TeacherClasses_Component();
-            string sql = @" SELECT COURSE.course_id as [courseid]
+
+            if(role==2)
+            {
+                string sql = @" SELECT COURSE.course_id as [courseid]
                             , CLASS.class_id as [classid]
                              , COURSE.courseno
                              , COURSE.coursetitle 
                              , ROOM.room_number as [roomnumber]
-                             , FORMAT(SCHED.time_start,'hh:mm tt') as [starttime]
-                             , FORMAT(SCHED.time_end,'hh:mm tt') as [endtime]
+                             , SCHED.time_start as [starttime]
+                             , SCHED.time_end as [endtime]
                              , SCHED.day
                              , CLASS.group_no as [groupno]
                              FROM dbo.Class CLASS
@@ -32,32 +36,67 @@ namespace FinalCapstone.Models
                              INNER JOIN dbo.[Course] COURSE ON COURSE.course_id = SUBJ.course_id
                              INNER JOIN dbo.Schedule SCHED ON CLASS.schedule_id = SCHED.schedule_id
                              INNER JOIN dbo.Classroom ROOM ON CLASS.classroom_id = ROOM.classroom_id  
-                             WHERE LOGINUSER.idnumber = @idno";
-            var result = _db.Query<TeacherClasses_Model>(sql, new { idno }).ToList();
-            cls._data = result;
-            return cls;
-        }
+                             WHERE LOGINUSER.idnumber = @idno  ORDER BY COURSE.course_id,CLASS.group_no";
 
-        public ClassDetails_Component GetClassDetailsPivot(int? classid)
+                var result = _db.Query<TeacherClasses_Model>(sql, new { idno }).ToList();
+                cls._data = result;
+                return cls;
+            }
+            else
+            {
+
+                string sql = @"SELECT COURSE.course_id as [courseid]
+                                , CLASSList.class_id as [classid]
+                                , COURSE.courseno
+                                , COURSE.coursetitle
+                                , ROOM.room_number as [roomnumber]
+                                , SCHED.time_start as [starttime]
+                                , SCHED.time_end as [endtime]
+                                , SCHED.day
+                                , CLASS.group_no as [groupno]
+                                FROM dbo.ClassList
+                                INNER JOIN Class ON CLASSList.class_id = CLASS.class_id
+                                INNER JOIN dbo.Classroom ROOM ON CLASS.classroom_id = ROOM.classroom_id
+                                INNER JOIN dbo.[User] LOGINUSER ON CLASSList.user_id = LOGINUSER.user_id
+                                INNER JOIN dbo.[Subject] SUBJ ON CLASS.subject_id = SUBJ.subject_id
+                                INNER JOIN dbo.[Course] COURSE ON COURSE.course_id = SUBJ.course_id
+                                INNER JOIN dbo.Schedule SCHED ON CLASS.schedule_id = SCHED.schedule_id
+                                WHERE LOGINUSER.idnumber = @idno ORDER BY COURSE.course_id,CLASS.group_no ";
+
+                var result = _db.Query<TeacherClasses_Model>(sql, new { idno }).ToList();
+                cls._data = result;
+                return cls;
+
+            }
+
+        }
+        public ClassDetails_Component GetClassDetailsPivot(int? classid, int? userlogin, int? role)
         {
             try
             {
-                string sql = string.Format(
-                             @" DECLARE @COLS       NVARCHAR(MAX)=''
+                if (role == 2)
+                {
+                    string sql = string.Format(
+                               @" DECLARE @COLS       NVARCHAR(MAX)=''
                                 DECLARE @QUERY      NVARCHAR(MAX)=''
 
+                         
                                 SELECT @COLS = @COLS + QUOTENAME(EXAMLIST) + ',' 
                                 FROM (
-		                                SELECT CAST(ExamType.examtype_id AS VARCHAR) + '|' + examtype_name + '|' + CAST(perfect_score AS VARCHAR) + '|' + CAST(Rubric.[weight] AS VARCHAR) + '|' + CAST(Rubric.rubric_id AS VARCHAR) AS [EXAMLIST]
+
+                                       	SELECT CAST(Rubric.rubric_id AS VARCHAR) + '|' + CAST(ExamType.examtype_id AS VARCHAR) + '|' + examtype_name + '|' + CAST(perfect_score AS VARCHAR) + '|' + CAST(Rubric.[weight] AS VARCHAR)  AS [EXAMLIST]
 		                                FROM ExamList 
 		                                INNER JOIN ExamType ON  ExamType.examtype_id = ExamList.examtype_id
                                         INNER JOIN Rubric ON Rubric.rubric_id = ExamType.rubric_id 
 		                                WHERE ExamList.class_id = {0}
-		                                UNION ALL
-		                                SELECT '999998' + '|' + 'Total' + '| ' + '| ' + '| ' AS [EXAMLIST]
-		                                UNION ALL
-		                                SELECT '999999' + '|' + 'Final Grade' + '| '  + '| ' + '| ' AS [EXAMLIST]
+                                
+								        UNION ALL
+
+                                        SELECT  '999998'  + '|' + '999998' + '|' + 'Total' + '| ' AS [EXAMLIST]
+                                        UNION ALL
+                                        SELECT  '999999' + '|' + '999999' + '|' + 'Final Grade' + '| '  + '| ' AS [EXAMLIST]
 		                                ) AS tmp
+                                ORDER BY EXAMLIST
 
                                 SELECT @COLS = SUBSTRING(@COLS, 0, LEN(@COLS))
 
@@ -66,34 +105,103 @@ namespace FinalCapstone.Models
                                 ( ' + 
 	                                CAST('SELECT TMP.* FROM
 	                                (
-	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(grade AS INT) as grade, CAST(ExamType.examtype_id AS VARCHAR) + ''|'' + examtype_name + ''|'' + CAST(perfect_score AS VARCHAR) + ''|'' + CAST(Rubric.[weight] AS VARCHAR) +''|''+ CAST(Rubric.rubric_id AS VARCHAR)   AS [EXAMLIST]
+	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(grade AS INT) as grade, CAST(Rubric.rubric_id AS VARCHAR) +''|''+ CAST(ExamType.examtype_id AS VARCHAR) + ''|'' + examtype_name + ''|'' + CAST(perfect_score AS VARCHAR) + ''|'' + CAST(Rubric.[weight] AS VARCHAR)   AS [EXAMLIST]
 	                                FROM ClassList 
 	                                INNER JOIN [User] ON [User].user_id = ClassList.user_id 
 	                                INNER JOIN ExamScore ON ExamScore.user_id = [User].user_id
-	                                INNER JOIN ExamType ON ExamType.examtype_id = ExamScore.examtype_id
-	                                INNER JOIN Rubric ON Rubric.rubric_id = ExamType.rubric_id 
-	                                WHERE CLASSLIST.class_id = {0}
+                                        AND ExamScore.class_id = ClassList.class_id
+                                    INNER JOIN ExamList ON  ExamList.class_id = CLASSLIST.class_id
+	                                    AND ExamList.examtype_id = ExamScore.examtype_id 
+                                    INNER JOIN ExamType ON ExamType.examtype_id = ExamScore.examtype_id
+                                    INNER JOIN Rubric ON Rubric.rubric_id = ExamType.rubric_id 
+	                                WHERE CLASSLIST.class_id = {0} 
+
 	                                UNION ALL
-	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(totalgrade  AS INT), ''999998'' + ''|'' + ''TOTAL'' + ''| '' + ''| ''  AS [EXAMLIST]
+	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(totalgrade  AS INT),  ''999998'' + ''| '' + ''999998'' + ''|'' + ''TOTAL'' + ''| ''  AS [EXAMLIST]
 	                                FROM ClassList
 	                                INNER JOIN ExamFinalScore ON  ExamFinalScore.user_id = ClassList.user_id
 		                                AND ExamFinalScore.class_id = ClassList.class_id
 	                                INNER JOIN [User] ON [User].user_id = ExamFinalScore.user_id 
-	                                WHERE ClassList.class_id = {0}
+	                                WHERE ClassList.class_id = {0} 
 	                                UNION ALL
-	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(finalgrade  AS INT), ''999999'' + ''|'' + ''FINAL GRADE'' + ''| '' + ''| ''  AS [EXAMLIST]
+	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(finalgrade  AS INT), ''999999'' + ''| '' + ''999999'' + ''|'' + ''FINAL GRADE'' + ''| ''  AS [EXAMLIST]
 	                                FROM ClassList
 	                                INNER JOIN ExamFinalScore ON  ExamFinalScore.user_id = ClassList.user_id
 		                                AND ExamFinalScore.class_id = ClassList.class_id
 	                                INNER JOIN [User] ON [User].user_id = ExamFinalScore.user_id 
-	                                WHERE ClassList.class_id = {0}
+	                                WHERE ClassList.class_id = {0} 
 	                                ' AS  NVARCHAR(MAX)) +
 	                                CAST(') TMP		 ) src 	PIVOT ( SUM(grade) FOR [EXAMLIST] IN (' + @COLS + ')) piv
 	                                ORDER BY [Last Name], [First Name]' AS  NVARCHAR(MAX))
 	
                                 EXEC(@QUERY)", classid);
-                var x = _db.Query<object>(sql).ToList();
-                return x.Count != 0 ? new ClassDetails_Component { respcode = 1, message = "success", _data = x } : new ClassDetails_Component { respcode = 0, message = "No record(s) found." };
+                    var x = _db.Query<object>(sql).ToList();
+                    return x.Count != 0 ? new ClassDetails_Component { respcode = 1, message = "success", _data = x } : new ClassDetails_Component { respcode = 0, message = "No record(s) found." };
+                }
+                else
+                {
+                    string sql = string.Format(
+                 @" DECLARE @COLS       NVARCHAR(MAX)=''
+                                DECLARE @QUERY      NVARCHAR(MAX)=''
+
+                         
+                                SELECT @COLS = @COLS + QUOTENAME(EXAMLIST) + ',' 
+                                FROM (
+
+                                       	SELECT CAST(Rubric.rubric_id AS VARCHAR) + '|' + CAST(ExamType.examtype_id AS VARCHAR) + '|' + examtype_name + '|' + CAST(perfect_score AS VARCHAR) + '|' + CAST(Rubric.[weight] AS VARCHAR)  AS [EXAMLIST]
+		                                FROM ExamList 
+		                                INNER JOIN ExamType ON  ExamType.examtype_id = ExamList.examtype_id
+                                        INNER JOIN Rubric ON Rubric.rubric_id = ExamType.rubric_id 
+		                                WHERE ExamList.class_id = {0}
+                                
+								        UNION ALL
+
+                                        SELECT  '999998'  + '|' + '999998' + '|' + 'Total' + '| ' AS [EXAMLIST]
+                                        UNION ALL
+                                        SELECT  '999999' + '|' + '999999' + '|' + 'Final Grade' + '| '  + '| ' AS [EXAMLIST]
+		                                ) AS tmp
+                                ORDER BY EXAMLIST
+
+                                SELECT @COLS = SUBSTRING(@COLS, 0, LEN(@COLS))
+
+                                SET @QUERY = 
+                                'SELECT * FROM 
+                                ( ' + 
+	                                CAST('SELECT TMP.* FROM
+	                                (
+	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(grade AS INT) as grade, CAST(Rubric.rubric_id AS VARCHAR) +''|''+ CAST(ExamType.examtype_id AS VARCHAR) + ''|'' + examtype_name + ''|'' + CAST(perfect_score AS VARCHAR) + ''|'' + CAST(Rubric.[weight] AS VARCHAR)   AS [EXAMLIST]
+	                                FROM ClassList 
+	                                INNER JOIN [User] ON [User].user_id = ClassList.user_id 
+	                                INNER JOIN ExamScore ON ExamScore.user_id = [User].user_id
+                                        AND ExamScore.class_id = ClassList.class_id
+                                    INNER JOIN ExamList ON  ExamList.class_id = CLASSLIST.class_id
+	                                    AND ExamList.examtype_id = ExamScore.examtype_id 
+                                    INNER JOIN ExamType ON ExamType.examtype_id = ExamScore.examtype_id
+                                    INNER JOIN Rubric ON Rubric.rubric_id = ExamType.rubric_id 
+	                                WHERE CLASSLIST.class_id = {0}  AND idnumber = {1}
+
+	                                UNION ALL
+	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(totalgrade  AS INT),  ''999998'' + ''| '' + ''999998'' + ''|'' + ''TOTAL'' + ''| ''  AS [EXAMLIST]
+	                                FROM ClassList
+	                                INNER JOIN ExamFinalScore ON  ExamFinalScore.user_id = ClassList.user_id
+		                                AND ExamFinalScore.class_id = ClassList.class_id
+	                                INNER JOIN [User] ON [User].user_id = ExamFinalScore.user_id 
+	                                WHERE ClassList.class_id = {0} AND idnumber = {1}
+	                                UNION ALL
+	                                SELECT [User].user_id, idnumber as [ID Number], l_name as [Last Name], f_name as [First Name], CAST(finalgrade  AS INT), ''999999'' + ''| '' + ''999999'' + ''|'' + ''FINAL GRADE'' + ''| ''  AS [EXAMLIST]
+	                                FROM ClassList
+	                                INNER JOIN ExamFinalScore ON  ExamFinalScore.user_id = ClassList.user_id
+		                                AND ExamFinalScore.class_id = ClassList.class_id
+	                                INNER JOIN [User] ON [User].user_id = ExamFinalScore.user_id 
+	                                WHERE ClassList.class_id = {0}  AND idnumber = {1}
+	                                ' AS  NVARCHAR(MAX)) +
+	                                CAST(') TMP		 ) src 	PIVOT ( SUM(grade) FOR [EXAMLIST] IN (' + @COLS + ')) piv
+	                                ORDER BY [Last Name], [First Name]' AS  NVARCHAR(MAX))
+	
+                                EXEC(@QUERY)", classid, userlogin);
+                    var x = _db.Query<object>(sql).ToList();
+                    return x.Count != 0 ? new ClassDetails_Component { respcode = 1, message = "success", _data = x } : new ClassDetails_Component { respcode = 0, message = "No record(s) found." };
+                }
             }
             catch (Exception ex)
             {
@@ -149,7 +257,8 @@ namespace FinalCapstone.Models
         {
             try
             {
-                string sql = string.Format(@"UPDATE [ExamScore] SET grade = @grade
+                string sql = string.Format(@"UPDATE [ExamScore] 
+                                            SET grade = @grade
                                             , user_login = @userlogin
                                             , user_date = GETDATE()
                                              WHERE user_id = @userid
@@ -157,6 +266,29 @@ namespace FinalCapstone.Models
                                                 AND class_id = @classid");
 
                 
+                var x = _db.Execute(sql, new { classid, examtypeid, userid, grade, userlogin });
+                return new Responses { respcode = 1, message = "success" };
+
+            }
+            catch (Exception ex)
+            {
+                return new Responses { respcode = 0, message = ex.Message };
+            }
+        }
+
+        public Responses EditGradeData(int? classid, int? examtypeid, int? userid, string grade, int? userlogin)
+        {
+            try
+            {
+                string sql = string.Format(@"UPDATE [ExamScore] 
+                                             SET grade = @grade
+                                            , user_login = @userlogin
+                                            , user_date = GETDATE()
+                                             WHERE user_id = @userid
+                                                AND examtype_id = @examtypeid
+                                                AND class_id = @classid");
+
+
                 var x = _db.Execute(sql, new { classid, examtypeid, userid, grade, userlogin });
                 return new Responses { respcode = 1, message = "success" };
 
@@ -192,9 +324,25 @@ namespace FinalCapstone.Models
         {
             try
             {
-                string sql = string.Format(@"INSERT INTO [ClassList] (user_id, class_id, user_login, user_date)
-                                            VALUES(@user_id, @class_id, @userlogin, getdate()) ");
+                string sql = @"INSERT INTO [ClassList] (user_id, class_id, user_login, user_date)
+                               VALUES(@user_id, @class_id, @userlogin, getdate())";
+
+                string sql2 = @"INSERT INTO [ExamScore] (user_id, grade, examtype_id, class_id, user_login, user_date)
+                                SELECT user_id = @user_id
+                                       , grade = 0
+                                       , examtype_id = ExamList.examtype_id
+                                       , class_id = @class_id
+                                       , user_login = @userlogin
+                                       , user_date = GETDATE()
+                                FROM ExamList
+                                LEFT JOIN ExamScore on ExamScore.class_id = ExamList.class_id
+                                    AND ExamScore.user_id = @user_id
+                                    AND ExamScore.examtype_id = ExamList.examtype_id
+                                WHERE ExamScore.examtype_id IS NULL
+                                AND ExamList.class_id =@class_id";
+
                 var x = _db.Execute(sql, new { user_id, class_id, userlogin });
+                var y = _db.Execute(sql2, new { user_id, class_id, userlogin });
                 return new Responses { respcode = 1, message = "success" };
 
             }
@@ -204,13 +352,25 @@ namespace FinalCapstone.Models
             }
         }
 
-        public Responses deleteClassList(int? classlist_id)
+        public Responses deleteClassList(int? userid, int? classlist_id)
         {
             try
             {
-                string sql = string.Format(@" DELETE FROM [ClassList]
-                                              WHERE [ClassList].classlist_id = @classlist_id");
-                var x = _db.Execute(sql, new { classlist_id });
+                string sql = @"DELETE FROM [ClassList]
+                                FROM [ClassList]
+                                INNER JOIN[User] ON [User].user_id = [ClassList].user_id
+                                    AND idnumber = @userid
+                                WHERE[ClassList].class_id = @classlist_id";
+
+
+                string sql2 = @"DELETE FROM ExamScore
+                                FROM ExamScore
+                                INNER JOIN [User] ON[User].user_id = ExamScore.user_id
+                                    AND idnumber = @userid
+                                WHERE  class_id =@classlist_id";
+
+                 var x = _db.Execute(sql, new { userid, classlist_id });
+                var y = _db.Execute(sql2, new { userid, classlist_id });
 
                 return new Responses { respcode = 1, message = "success" };
             }
@@ -249,7 +409,27 @@ namespace FinalCapstone.Models
                                 FROM [ExamType]					
                                 INNER JOIN [ExamScore] on [ExamType].examtype_id = [ExamScore].examtype_id	
 	                                AND class_id = @classid
-	                                AND [ExamScore].user_id = @idnumber	";
+	                                AND [ExamScore].user_id = @idnumber
+                                ORDER BY rubric_id, examtype_id";
+                var x = _db.Query<ExamList_Model>(sql, new { idnumber, classid }).ToList();
+                return x.Count != 0 ? new getExamTypeResponse { respcode = 1, message = "success", _data = x } : new getExamTypeResponse { respcode = 0, message = "No record(s) found." };
+            }
+            catch (Exception ex)
+            {
+                return new getExamTypeResponse { respcode = 0, message = ex.Message };
+            }
+        }
+
+        public getExamTypeResponse GetExamTypeByUserDetailsEdit(int? idnumber, int? classid)
+        {
+            try
+            {
+                string sql = @" SELECT [ExamType].examtype_id
+                                ,examtype_name		
+                                FROM [ExamType]					
+                                INNER JOIN [ExamScore] on [ExamType].examtype_id = [ExamScore].examtype_id	
+	                                AND class_id = @classid
+	                                AND [ExamScore].user_id = @idnumber AND Grade=0	";
                 var x = _db.Query<ExamList_Model>(sql, new { idnumber, classid }).ToList();
                 return x.Count != 0 ? new getExamTypeResponse { respcode = 1, message = "success", _data = x } : new getExamTypeResponse { respcode = 0, message = "No record(s) found." };
             }
@@ -299,7 +479,7 @@ namespace FinalCapstone.Models
                 string sql = string.Format(@"SELECT examlist_id
                                                 ,class_id
                                                 ,[ExamType].examtype_id
-                                                ,exam_type
+                                                ,outputs
                                                 ,examtype_name
                                                 ,perfect_score
                                                 ,[weight] 
@@ -310,19 +490,22 @@ namespace FinalCapstone.Models
                                              ON [ExamList].examtype_id = [ExamType].examtype_id
                                              INNER JOIN [Rubric] ON [ExamType].rubric_id = [Rubric].rubric_id
                                              WHERE class_id = @classid
+                                             ORDER BY [Rubric].rubric_id ,[ExamType].examtype_id
 
                                             SELECT [ExamType].examtype_id
-                                                ,exam_type
+                                                ,outputs
                                                 ,examtype_name
-                                                ,perfect_score
+                                                ,0 as perfect_score 
                                                 ,[weight] 
                                                 ,[Rubric].rubric_id  
-                                             FROM [ExamType] 
-                                             LEFT JOIN [ExamList]
-                                             ON [ExamList].examtype_id = [ExamType].examtype_id
-                                                AND [ExamList].class_id = @classid
-                                             INNER JOIN [Rubric] ON [ExamType].rubric_id = [Rubric].rubric_id
-                                             WHERE [ExamList].examtype_id IS NULL
+                                            FROM [ExamType] 
+                                            INNER JOIN Class ON [Class].class_id = @classid
+                                            INNER JOIN Subject ON Subject.subject_id = Class.subject_id
+                                            INNER  JOIN [Rubric] ON [ExamType].rubric_id = [Rubric].rubric_id
+	                                            AND [Rubric].[course_id] = Subject.[course_id]
+                                            LEFT JOIN [ExamList] ON [ExamList].examtype_id = [ExamType].examtype_id
+	                                            AND [ExamList].class_id = [Class].class_id 
+                                            WHERE [ExamList].examtype_id IS NULL
                                              ");
 
                 var x = _db.QueryMultiple(sql, new { classid });
@@ -342,19 +525,21 @@ namespace FinalCapstone.Models
             }
         }
 
-        public getExamTypeResponse GetExamTypes(int? examtypeid)
+        public getExamTypeResponse GetExamTypes(int? classid, int? examtypeid)
         {
-            string sql = @" SELECT examtype_id
-                                  ,exam_type
-                                  ,examtype_name
-                                  ,perfect_score
-                                  ,[weight] 
-                                  ,[Rubric].rubric_id  
-                              FROM [ExamType] 
-                              INNER JOIN [Rubric] ON [ExamType].rubric_id = [Rubric].rubric_id
-                              WHERE examtype_id = @examtypeid
+            string sql = @"SELECT ExamList.examtype_id
+                        ,outputs
+                        ,examtype_name
+                        ,perfect_score
+                        ,[weight] 
+                        ,[Rubric].rubric_id  
+                        FROM ExamList
+                        INNER JOIN [ExamType] ON [ExamType].examtype_id = ExamList.examtype_id
+                        INNER JOIN [Rubric] ON [ExamType].rubric_id = [Rubric].rubric_id
+                        WHERE class_id = @classid
+                        AND ExamList.examtype_id = @examtypeid
                             ";
-            var x = _db.Query<ExamList_Model>(sql, new { examtypeid }).ToList();
+                var x = _db.Query<ExamList_Model>(sql, new { classid, examtypeid }).ToList();
             return new getExamTypeResponse
             {
                 respcode = 1,
@@ -363,12 +548,12 @@ namespace FinalCapstone.Models
             };
         }
 
-        public Responses InsertDataExamList(int? classid, int? examtypeid, bool islock, string userlogin)
+        public Responses InsertDataExamList(int? classid, int? examtypeid, int? perfectscore, bool islock, string userlogin)
         {
             try
             {
-                string sql = string.Format(@"INSERT INTO [ExamList] (class_id, examtype_id, lock, user_login, user_date)
-                                            VALUES(@classid, @examtypeid, @islock, @userlogin, getdate()) ");
+                string sql = string.Format(@"INSERT INTO [ExamList] (class_id, examtype_id, perfect_score,lock, user_login, user_date) 
+                                            VALUES(@classid, @examtypeid, @perfectscore, @islock, @userlogin, getdate()) ");
 
                 string sql2 = @"INSERT INTO [ExamScore] (user_id, grade, examtype_id, class_id, user_login, user_date)
                                 SELECT user_id = [ClassList].user_id
@@ -380,7 +565,7 @@ namespace FinalCapstone.Models
                                 FROM [ClassList]
                                 WHERE class_id =  @classid
                                 ";
-                var x = _db.Execute(sql, new { classid, examtypeid, islock, userlogin });
+                var x = _db.Execute(sql, new { classid, examtypeid, perfectscore, islock, userlogin }); 
                 var y = _db.Execute(sql2, new { classid, examtypeid, userlogin });
                 return new Responses { respcode = 1, message = "success" };
 
@@ -390,13 +575,19 @@ namespace FinalCapstone.Models
                 return new Responses { respcode = 0, message = ex.Message };
             }
         }
-        public Responses DeleteExamList(int? examlist_id)
+
+          public Responses DeleteExamList(int? examlist_id, int? classid, int? examtype_id)
         {
             try
             {
                 string sql = string.Format(@" DELETE FROM [ExamList]
                                               WHERE examlist_id = @examlist_id");
+
+                string sql2 = string.Format(@" DELETE FROM [ExamScore]
+                                              WHERE class_id = @classid
+                                               AND examtype_id = @examtype_id");
                 var x = _db.Execute(sql, new { examlist_id });
+                var y = _db.Execute(sql2, new { classid, examtype_id });
 
                 return new Responses { respcode = 1, message = "success" };
             }

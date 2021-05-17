@@ -26,7 +26,7 @@ namespace FinalCapstone.Controllers
         public ActionResult Create()
         {          
             ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno");
-            ViewBag.user_id = new SelectList(db.Users, "user_id", "f_name");
+            ViewBag.user_id = new SelectList(db.Users.Where(g=>g.role_id == 2), "user_id", "f_name" );
             return View();
         }
 
@@ -35,15 +35,18 @@ namespace FinalCapstone.Controllers
         public ActionResult Create(ClassCreation model)
         {
             var chk1 = (from x in db.Subjects where x.course_id == model.course_id select x).FirstOrDefault();
-            
+            var chk2 = (from y in db.Subjects where y.course_id == model.course_id select y).FirstOrDefault();
            
                
 
                 Classroom classroom = new Classroom();
                 classroom.room_number = model.room_number;
+                classroom.capacity = 0;
                 db.Classrooms.Add(classroom);
                 db.SaveChanges();
                 int latestclassroom = classroom.classroom_id;
+
+           
 
                 Schedule sched = new Schedule();
                 sched.time_start = model.time_start;
@@ -74,37 +77,53 @@ namespace FinalCapstone.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Class @class = db.Classes.Find(id);
-            if (@class == null)
+            var a = db.Classes.Find(id);
+           // Class @class = db.Classes.Find(id);
+            var ClassModel = new ClassViewModel {class_id=a.class_id,subject_id = a.subject_id,classroom_id = a.classroom_id, user_id = a.user_id, schedule_id = a.schedule_id,group_no = a.group_no, time_start=a.Schedule.time_start, time_end= a.Schedule.time_end,day=a.Schedule.day,room_number=a.Classroom.room_number};
+            if (a == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.classroom_id = new SelectList(db.Classrooms, "classroom_id", "room_number", @class.classroom_id);
-            ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day", @class.schedule_id);
-            ViewBag.subject_id = new SelectList(db.Subjects, "subject_id", "subject_name", @class.subject_id);
-            ViewBag.course_id = new SelectList(db.Subjects, "course_id", "courseno", @class.Subject.course_id);
-            ViewBag.user_id = new SelectList(db.Users, "user_id", "f_name", @class.user_id);
-            return View(@class);
+            ViewBag.classroom_id = new SelectList(db.Classrooms, "classroom_id", "room_number", a.classroom_id);          
+            ViewBag.subject_id = new SelectList(db.Subjects, "subject_id", "subject_name", a.subject_id);
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", a.Subject.course_id);
+            ViewBag.user_id = new SelectList(db.Users, "user_id", "f_name", a.user_id);
+            return View(ClassModel);
         }
 
-        // POST: Classes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Classes/Edit/5       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "class_id,classroom_id,user_id,subject_id,schedule_id,group_no")] Class @class)
+        public ActionResult Edit(ClassViewModel model, int? id)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(@class).State = EntityState.Modified;
+                var a = db.Classes.Find(id);
+                var ClassModel = new ClassViewModel { class_id = a.class_id, subject_id = a.subject_id, classroom_id = a.classroom_id, user_id = a.user_id, schedule_id = a.schedule_id, group_no = a.group_no, time_start = a.Schedule.time_start, time_end = a.Schedule.time_end, day = a.Schedule.day, room_number = a.Classroom.room_number };
+                var chk1 = (from x in db.Subjects where x.course_id == model.course_id select x).FirstOrDefault();
+                
+                var cls = db.Classes.Find(model.class_id);              
+                cls.group_no = model.group_no;            
+                cls.subject_id = chk1.subject_id;
+                var classroom = db.Classrooms.Find(ClassModel.classroom_id);
+                classroom.classroom_id = (int)ClassModel.classroom_id ;
+                classroom.room_number = model.room_number;
+                var sched = db.Schedules.Find(ClassModel.schedule_id);
+                sched.time_start = model.time_start;
+                sched.time_end = model.time_end;
+                sched.day = ClassModel.day;
+                var user = db.Users.Find(model.user_id);
+                user.user_id = (int)model.user_id;
                 db.SaveChanges();
                 return RedirectToAction("Index");
+
             }
-            ViewBag.classroom_id = new SelectList(db.Classrooms, "classroom_id", "room_number", @class.classroom_id);
-            ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day", @class.schedule_id);
-            ViewBag.subject_id = new SelectList(db.Subjects, "subject_id", "subject_name", @class.subject_id);
-            ViewBag.user_id = new SelectList(db.Users, "user_id", "f_name", @class.user_id);
-            return View(@class);
+            ViewBag.classroom_id = new SelectList(db.Classrooms, "classroom_id", "room_number", model.classroom_id);
+            ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day", model.schedule_id);
+            ViewBag.subject_id = new SelectList(db.Subjects, "subject_id", "subject_name", model.subject_id);
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", model.course_id);
+            ViewBag.user_id = new SelectList(db.Users, "user_id", "f_name", model.user_id);
+            return View(model);
         }
 
         // GET: Classes/Delete/5

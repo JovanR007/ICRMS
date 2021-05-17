@@ -70,13 +70,16 @@ namespace FinalCapstone.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ClassList classList = db.ClassLists.Find(id);
+            //classList.group_no = classList.group_no;
             Course courses = db.Courses.Find(id);
             if (classList == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.classlist_id = new SelectList(db.Users, "user_id", "f_name", classList.classlist_id);
-            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", courses.course_id);
+
+            ViewBag.classlist_id = classList.classlist_id;
+            ViewBag.user_id = new SelectList(db.Users, "user_id", "f_name", classList.user_id);
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", classList.Class.Subject.Course.course_id);
             return View(classList);
         }
 
@@ -85,11 +88,15 @@ namespace FinalCapstone.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "classlist_id,user_id")] ClassList classList)
+        public ActionResult Edit([Bind(Include = "user_id,class_id,classlist_id,group_no")] ClassList classList)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(classList).State = EntityState.Modified;
+
+                //var dbclass = db.Classes.Find(classList.class_id);
+                //dbclass.group_no = classList.group_no;
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -154,7 +161,7 @@ namespace FinalCapstone.Controllers
                 ClassList clist = new ClassList();
                 clist.user_id = model.user_id;
                 clist.class_id = chk1.class_id;
-                clist.classlist_no = chk1.class_id;
+                clist.classlist_id = chk1.class_id;
                 db.ClassLists.Add(clist);
                 db.SaveChanges();
 

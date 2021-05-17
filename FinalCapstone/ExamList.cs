@@ -17,6 +17,10 @@ namespace FinalCapstone
         public int examlist_id { get; set; }
         public Nullable<int> class_id { get; set; }
         public Nullable<int> examtype_id { get; set; }
+        public Nullable<bool> @lock { get; set; }
+        public Nullable<int> user_login { get; set; }
+        public Nullable<System.DateTime> user_date { get; set; }
+        public Nullable<int> perfect_score { get; set; }
     
         public virtual Class Class { get; set; }
         public virtual ExamType ExamType { get; set; }

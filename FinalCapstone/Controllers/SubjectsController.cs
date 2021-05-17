@@ -65,41 +65,88 @@ namespace FinalCapstone.Controllers
 
 
            
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         // GET: Subjects/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, int courseid)
         {
+
+            var cid = courseid;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Subject subject = db.Subjects.Find(id);
-            if (subject == null)
+          //  Subject subject = db.Subjects.Find(id);
+            var subject = db.Subjects.Find(id);
+            var viewModel = new SubjectViewModel { subject_id = subject.subject_id,course_id = subject.course_id, courseno = subject.Course.courseno , coursetitle = subject.Course.coursetitle,coursedescription = subject.Course.coursedescription };
+            if (viewModel == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", subject.course_id);
-            return View(subject);
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", subject.Course.courseno);
+            
+            return View(viewModel);
         }
 
         // POST: Subjects/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "subject_id,course_id")] SubjectViewModel subject, int courseid)
+        //{
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        var sject = db.Subjects.Find(subject.subject_id);
+        //        sject.course_id = subject.course_id;
+
+
+        //       var scourse =  db.Courses.Find(subject.course_id);
+        //        scourse.courseno = subject.courseno;
+        //        scourse.coursetitle = subject.coursetitle;
+        //        scourse.coursedescription = subject.coursedescription;
+
+        //        db.SaveChanges();
+
+        //        return RedirectToAction("Index");
+        //    }
+
+
+
+        //    return View(subject);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "subject_id,course_id")] Subject subject)
+        public ActionResult Edit(SubjectViewModel subject)
         {
+
             if (ModelState.IsValid)
             {
-                db.Entry(subject).State = EntityState.Modified;
+                var sject = db.Subjects.Find(subject.subject_id);
+                subject.course_id = sject.course_id;
+
+
+                var scourse = db.Courses.Find(subject.course_id);
+                scourse.courseno = subject.courseno;
+                scourse.coursetitle = subject.coursetitle;
+                scourse.coursedescription = subject.coursedescription;
+
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            ViewBag.course_id = new SelectList(db.Courses, "course_id", "courseno", subject.course_id);
+
+
+
             return View(subject);
         }
+
+
+
+
+
 
         // GET: Subjects/Delete/5
         public ActionResult Delete(int? id)

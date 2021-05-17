@@ -5,13 +5,13 @@
 }
 
 <h2>Index</h2>
-<input id="myInput" type="text" placeholder="Search..">
+<input id="myInput" type="text" placeholder="Search Here">
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table" id="myTable">
+<table class="table" id="mytable">
     <tr>
-        <th>
+        <th>   
             Course Code
         </th>
         <th>
@@ -81,7 +81,7 @@
     $(document).ready(function () {
         $("#myInput").on("keyup", function () {
             var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function () {
+            $("#mytable tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });

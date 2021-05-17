@@ -15,10 +15,21 @@ namespace FinalCapstone.Controllers
         private FinalCapstoneEntities db = new FinalCapstoneEntities();
 
         // GET: Users
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string searchString)
         {
-            var users = db.Users.Include(u => u.Batch).Include(u => u.ClassLists).Include(u => u.Program).Include(u => u.Role);
-            return View(users.ToList());
+            var userz = from s in db.Users
+                        select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                userz = userz.Where(s => s.f_name.Contains(searchString)
+                                       || s.l_name.Contains(searchString));
+                                       
+                                     
+            }
+
+
+            //var users = db.Users.Include(u => u.Batch).Include(u => u.ClassLists).Include(u => u.Program).Include(u => u.Role).ToList();
+            return View(userz);
         }
 
         // GET: Users/Create

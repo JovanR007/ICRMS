@@ -7,9 +7,10 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="~/Content/Teachercss/bootstrap.min.css" />
+
 </head>
 <body>
-    <h2>Exam Details - @ViewBag.coursetitle</h2>
+    <h2>Exam List Details - @ViewBag.coursetitle</h2>
     <p>
         <button class="btn btn-primary addexam" data-id="@ViewBag.userlogin">Add Exam</button>
     </p>
@@ -19,12 +20,13 @@
                 <thead class="headr-color">
                     <tr>
                         <th hidden>Exam List ID</th>
-                        <th>Type</th>
+                        <th hidden>Type</th>
                         <th>Name</th>
                         <th>Perfect Score</th>
                         <th>Weight</th>
-                        <th>Lock</th>
+                        <th hidden>Lock</th>
                         <th hidden>Rubric ID</th>
+                        <th hidden>Exam type id</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -35,17 +37,15 @@
                         {
                             <tr align="center">
                                 <td hidden>@item.examlist_id</td>
-                                <td>@item.exam_type</td>
+                                <td hidden>@item.exam_type</td>
                                 <td>@item.examtype_name</td>
                                 <td>@item.perfect_score</td>
                                 <td>@item.weight</td>
-                                <td>@item.islock</td>
+                                <td hidden>@item.islock</td>
                                 <td hidden>@item.rubric_id</td>
+                                <td hidden>@item.examtype_id</td>
                                 <td>
-                                    <button class="btn btn-primary editexamlst" data-examid="@item.examlist_id">Edit</button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-primary delexamlst" data-examid="@item.examlist_id">Delete</button>
+                                    <button class="btn btn-primary delexamlst" data-examid="@item.examlist_id" data-classid="@ViewBag.classid" data-examtype_id="@item.examtype_id">Delete</button>
                                 </td>
                             </tr>
                         }
@@ -54,11 +54,10 @@
             </table>
         </div>
     </div>
-    <div class="row">
-        @Html.ActionLink("Back to List", "Index")
-    </div>
+   
 
     @section ModalSection{
+
 
         <div id="AddExamModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -74,45 +73,30 @@
                                 <label class="">Type <b style="color: red;">*</b></label>
                                 <select id="selExamType" class="selectpicker form-control">
                                     @{
-                                        //<option value=""></option>
+                                        < option value = "" ></ option >
+
                                         foreach (var x in Model._examtype)
                                         {
-                                            <option value="@x.examtype_id">@x.exam_type</option>
+                                            <option value="@x.examtype_id">@x.exam_type  @x.examtype_name</option>
                                         }
                                     }
                                 </select>
+                            @*</div>*@
 
-                            </div>
-                            <div class="col-md-2" style="margin-top: 25px;">
-                                <label class="">Lock</label>
-                                <input type="checkbox" id="chkLock" name="Lock" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label class="">Name <b style="color: red;"></b></label>
-                                <input class="form-control mandatory" name="ExamName" readonly style="background-color: #eee;" />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="">Perfect Score <b style="color: red;"></b></label>
+                                    <input class="form-control mandatory" id="perfectscoreID" step="any" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="3" required="required" />
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="">Perfect Score <b style="color: red;"></b></label>
-                                <input class="form-control mandatory" name="PerfectScore" readonly style="background-color: #eee;" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="">Weight <b style="color: red;"></b></label>
-                                <input class="form-control mandatory" name="Weight" readonly style="background-color: #eee;" />
-                            </div>
-
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-addexam" data-classid="@ViewBag.classid"><i class="fas fa-save"></i> Save</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary btn-addexam" data-classid="@ViewBag.classid"><i class="fas fa-save"></i> Save</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
                     </div>
                 </div>
             </div>
-        </div>
 
     }
 
@@ -124,19 +108,28 @@
     <script src="~/Scripts/json2.js"> </script>
     <script src="~/Scripts/jquery-3.3.1.min.js"> </script>
     <script type="text/javascript">
+
+
+
         $(document).ready(function () {
             GetExamType();
         });
+        
+
+
 
         $(document).on('click', '.delexamlst', function () {
             var examid = $(this).attr('data-examid');
+            var classid = $(this).attr('data-classid');
+            var examtype_id = $(this).attr('data-examtype_id');
+
             if (examid != '') {
                 $.ajax({
                     type: "POST",
                     url: '/TeacherClasses/DeleteExamList',
                     type: "post",
                     dataType: 'json',
-                    data: { 'examlist_id': examid },
+                    data: { 'examlist_id': examid, 'classid': classid, 'examtype_id': examtype_id },
                     success: function (datax) {
                         if (datax.respcode == 1) {
                             alert('success');
@@ -151,7 +144,7 @@
         });
 
         $(document).on('click', '.addexam', function () {
-            $('#AddExamModal').modal('show');
+              $('#AddExamModal').modal('show');
         });
 
         $(document).on('click', '.btn-addexam', function () {
@@ -159,17 +152,23 @@
             var examtypeid = $('#selExamType').val();
             var lock = $('#chkLock').is(':checked');
             var userlogin = $('.addexam').attr('data-id');
-
+            var perfectscore = $('#perfectscoreID').val();
             if (examtypeid == '') {
                 alert('Exam Type is empty.');
             }
-            if (classid != '' && examtypeid != '') {
+
+            if (perfectscore == '') {
+                alert('Perfect Score is blank. Input value > 0')
+            }
+
+
+                if (classid != '' && examtypeid != '' && perfectscore != '') {
                 $.ajax({
                     type: "POST",
                     url: '/TeacherClasses/InsertExamList',
                     type: "post",
                     dataType: 'json',
-                    data: { 'classid': classid, 'examtypeid': examtypeid, 'islock': lock, 'userlogin': userlogin },
+                    data: { 'classid': classid, 'examtypeid': examtypeid, 'perfectscore':perfectscore, 'islock': lock, 'userlogin': userlogin },
                     success: function (datax) {
                         if (datax.respcode == 1) {
                             alert('success');
@@ -184,6 +183,7 @@
 
         });
 
+
         $(document).on('change', '#selExamType', function () {
             GetExamType();
         });
@@ -197,18 +197,35 @@
             //}
         });
 
+        $(document).on('click', '.editexam', function () {
+            $('#EditExamModal').modal('show');
+        });
+
+        function ReFreshEntry()
+        {
+            $('#selExamType').closest('div.selExamTypeID').show();
+            $('input[name=ExamType]').closest('div.txtExamTypeID').hide();
+            $('input[name=ExamType]').val('');
+            $('input[name=ExamName]').val('');
+            $('input[name=PerfectScore]').val('');
+            $('input[name=Weight]').val('');
+            $('#chkLock').prop('checked', false);
+            $("#selExamType").val($("#selExamType option:first").val());
+            //$('.selectpicker').selectpicker('refresh');
+        }
+
         function GetExamType() {
             if ($('#selExamType').val() != '') {
+                var classid = $(this).attr('data-classid');
                 $.ajax({
                     type: "POST",
                     url: '/TeacherClasses/AddExamType',
                     type: "post",
                     dataType: 'json',
-                    data: { 'examtypeid': $('#selExamType').val() },
+                    data: { 'classid':classid, 'examtypeid': $('#selExamType').val() },
                     success: function (datax) {
                         if (datax.respcode == 1) {
                             $('input[name=ExamName]').val(datax._data[0].examtype_name);
-                            $('input[name=PerfectScore]').val(datax._data[0].perfect_score);
                             $('input[name=Weight]').val(datax._data[0].weight);
                         }
                         else {

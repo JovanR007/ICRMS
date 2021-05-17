@@ -37,9 +37,9 @@
     </td>
     <td>
         
-        <button onclick="location.href='@Url.Action("Edit","Subjects", new { id = item.subject_id})'">Edit</button>
+        <button onclick="location.href='@Url.Action("Edit","Subjects", new { id = item.subject_id, courseid=item.course_id})'">Edit</button>
         <button onclick="location.href='@Url.Action("Delete","Subjects", new { id =item.subject_id})'">Delete</button>
-        <button onclick="location.href='@Url.Action("Create","Rubrics", new { id = item.Course.course_id})'">Create Rubrics</button>
+        <button onclick="location.href='@Url.Action("Index","Rubrics", new { id = item.Course.course_id})'">Create Rubrics</button>
     </td>
 </tr>
 }

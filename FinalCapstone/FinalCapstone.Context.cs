@@ -25,11 +25,14 @@ namespace FinalCapstone
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<AttendanceDate> AttendanceDates { get; set; }
+        public virtual DbSet<AttendanceList> AttendanceLists { get; set; }
         public virtual DbSet<Batch> Batches { get; set; }
         public virtual DbSet<Class> Classes { get; set; }
         public virtual DbSet<ClassList> ClassLists { get; set; }
         public virtual DbSet<Classroom> Classrooms { get; set; }
         public virtual DbSet<Course> Courses { get; set; }
+        public virtual DbSet<ExamFinalScore> ExamFinalScores { get; set; }
         public virtual DbSet<ExamList> ExamLists { get; set; }
         public virtual DbSet<ExamScore> ExamScores { get; set; }
         public virtual DbSet<ExamType> ExamTypes { get; set; }

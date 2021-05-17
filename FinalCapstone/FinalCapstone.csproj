@@ -51,10 +51,12 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -132,6 +134,12 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="AttendanceDate.cs">
+      <DependentUpon>FinalCapstone.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceList.cs">
+      <DependentUpon>FinalCapstone.tt</DependentUpon>
+    </Compile>
     <Compile Include="Batch.cs">
       <DependentUpon>FinalCapstone.tt</DependentUpon>
     </Compile>
@@ -155,6 +163,9 @@
     <Compile Include="Controllers\TeacherClassesController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Course.cs">
+      <DependentUpon>FinalCapstone.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExamFinalScore.cs">
       <DependentUpon>FinalCapstone.tt</DependentUpon>
     </Compile>
     <Compile Include="ExamList.cs">
@@ -185,11 +196,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ClassCreation.cs" />
+    <Compile Include="Models\ClassViewModel.cs" />
     <Compile Include="Models\DisplayStudentTable.cs" />
     <Compile Include="Models\ExamCreation.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\RubricCreation.cs" />
+    <Compile Include="Models\RubricEdit.cs" />
     <Compile Include="Models\StudentEnrollment.cs" />
     <Compile Include="Models\SubjectCreation.cs" />
+    <Compile Include="Models\SubjectViewModel.cs" />
     <Compile Include="Models\TeacherClass.cs" />
     <Compile Include="Models\TeacherClassesViewModel.cs" />
     <Compile Include="Program.cs">
@@ -246,8 +261,8 @@
     <Content Include="favicon.ico" />
     <Content Include="FinalCapstone.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>FinalCapstone.Context.cs</LastGenOutput>
       <DependentUpon>FinalCapstone.edmx</DependentUpon>
+      <LastGenOutput>FinalCapstone.Context.cs</LastGenOutput>
     </Content>
     <Content Include="FinalCapstone.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -327,13 +342,6 @@
     <Content Include="images\Teacherimages\video.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="FinalCapstone.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>FinalCapstone.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="FinalCapstone.edmx.diagram">
-      <DependentUpon>FinalCapstone.edmx</DependentUpon>
-    </Content>
     <Content Include="Content\css\.DS_Store" />
     <Content Include="Content\css\bootstrap\.DS_Store" />
     <Content Include="Content\css\css\.DS_Store" />
@@ -508,6 +516,13 @@
     <Content Include="Content\Teachercss\bootstrap.css.map" />
     <Content Include="Content\Teachercss\style.css.map" />
     <Content Include="images\Teacherimages\.DS_Store" />
+    <EntityDeploy Include="FinalCapstone.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>FinalCapstone.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="FinalCapstone.edmx.diagram">
+      <DependentUpon>FinalCapstone.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -581,7 +596,9 @@
     <Content Include="Scripts\Teacherjs\main.js" />
     <Content Include="Scripts\Teacherjs\modernizr-2.6.2.min.js" />
     <Content Include="Scripts\Teacherjs\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -603,11 +620,11 @@
     <Content Include="Views\Users\Delete.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
-    <Content Include="Views\Schedules\Create.cshtml" />
-    <Content Include="Views\Schedules\Delete.cshtml" />
-    <Content Include="Views\Schedules\Details.cshtml" />
-    <Content Include="Views\Schedules\Edit.cshtml" />
-    <Content Include="Views\Schedules\Index.cshtml" />
+    <Content Include="Views\Rubrics\Schedules\Create.cshtml" />
+    <Content Include="Views\Rubrics\Schedules\Delete.cshtml" />
+    <Content Include="Views\Rubrics\Schedules\Details.cshtml" />
+    <Content Include="Views\Rubrics\Schedules\Edit.cshtml" />
+    <Content Include="Views\Rubrics\Schedules\Index.cshtml" />
     <Content Include="Views\Classes\Create.cshtml" />
     <Content Include="Views\Classes\Delete.cshtml" />
     <Content Include="Views\Classes\Edit.cshtml" />
@@ -645,6 +662,7 @@
     <Content Include="Views\TeacherClasses\ClassListDetails.cshtml" />
     <Content Include="Views\TeacherClasses\AddClassList.cshtml" />
     <Content Include="Views\TeacherClasses\ExamListDetails.cshtml" />
+    <Content Include="Views\Login\StudentIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

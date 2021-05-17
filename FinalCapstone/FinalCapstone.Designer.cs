@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\00016\Documents\Jovan\V2\FinalCapstone\FinalCapstone\FinalCapstone.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\jovan\OneDrive\Desktop\DEPLOYMENT TEST\FinalCapstone\FinalCapstone\FinalCapstone.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

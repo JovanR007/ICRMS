@@ -16,8 +16,8 @@ namespace FinalCapstone.Models
         public int course_id { get; set; }
         public string courseno { get; set; }
         public string room_number { get; set; }     
-        public Nullable<System.DateTime> time_start { get; set; }
-        public Nullable<System.DateTime> time_end { get; set; }
+        public string time_start { get; set; }
+        public string time_end { get; set; }
         public string day { get; set; }
         public Nullable<int> group_no { get; set; }
         public string f_name { get; set; }
