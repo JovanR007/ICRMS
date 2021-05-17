@@ -27,8 +27,17 @@
             <th></th>
         </tr>
        
-        @foreach (var item in Model)
+        @if (Model == null)
         {
+            <tr>
+            <td>Hello World</td>
+            </tr>
+        }
+        else
+        {
+            //foreach (var item in Model)
+
+           // {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.f_name)
@@ -49,11 +58,11 @@
                     @Html.DisplayFor(modelItem => item.Role.user_type)
                 </td>
                 <td>
-                    <button onclick="location.href='@Url.Action("Edit","Users", new { id =item.user_id})'">Edit</button>
-                    <button onclick="location.href='@Url.Action("Delete","Users", new { id =item.user_id})'">Delete</button>
+                    <button onclick="location.href='@Url.Action("Edit", "Users", new { id = item.user_id })'">Edit</button>
+                    <button onclick="location.href='@Url.Action("Delete", "Users", new { id = item.user_id })'">Delete</button>
                 </td>
             </tr>
+            }
         }
-
     </table>
 
