@@ -2,67 +2,141 @@
 
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>List Of Users</h2>
+
 
 <p>
-    @Html.ActionLink("Create a new user", "Create")
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#0275d8" class="bi bi-person-plus" viewBox="0 0 16 16">
+        <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+        <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+    </svg>  @Html.ActionLink("Create a new user", "Create","Users", new { @class = "btn btn-outline-primary " })
+   
 </p>
-@using (Html.BeginForm())
-{
-    <p>
-        Find by name: @Html.TextBox("SearchString")
-        <input type="submit" value="Search" />
-    </p>
-}
-    <table class="table" id="myTable">
+
+
+<input id="myInput" type="text" style="float:right" placeholder="Search Here">
+
+
+<table class="table" >
+    <thead>
         <tr>
-            <th> First Name</th>
-            <th> Last Name</th>
-            <th> ID Number</th>
-            <th>Program</th>
-            <th>Batch</th>
-            <th>User Type</th>
+            <th onclick="sortTable(0)" style="cursor:pointer"> First Name</th>
+            <th onclick="sortTable(1)" style="cursor:pointer"> Last Name </th>
+            <th onclick="sortTable(2)" style="cursor:pointer"> ID Number</th>
+            <th onclick="sortTable(3)" style="cursor:pointer">Program</th>
+            <th onclick="sortTable(4)" style="cursor:pointer">Batch</th>
+            <th onclick="sortTable(5)" style="cursor:pointer">User Type</th>
             <th></th>
         </tr>
-       
+    </thead>
+    <tbody id="myTable">
         @if (Model == null)
         {
             <tr>
-            <td>Hello World</td>
+                <td>Hello World</td>
             </tr>
         }
         else
         {
-            //foreach (var item in Model)
+            foreach (var item in Model)
 
-           // {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.f_name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.l_name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.idnumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Program.program1)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Batch.batch1)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Role.user_type)
-                </td>
-                <td>
-                    <button onclick="location.href='@Url.Action("Edit", "Users", new { id = item.user_id })'">Edit</button>
-                    <button onclick="location.href='@Url.Action("Delete", "Users", new { id = item.user_id })'">Delete</button>
-                </td>
-            </tr>
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.f_name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.l_name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.idnumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Program.program1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Batch.batch1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role.user_type)
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-primary" onclick="location.href='@Url.Action("Edit", "Users", new { id = item.user_id, })'">Edit</button>
+                        <button class="btn btn-outline-danger" onclick="location.href='@Url.Action("Delete", "Users", new { id = item.user_id})'">Delete</button>
+                    </td>
+                </tr>
             }
         }
-    </table>
+    </tbody>
+</table>
 
+
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
+
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("myTable");
+        switching = true;
+        //Set the sorting direction to ascending:
+        dir = "asc";
+        /*Make a loop that will continue until
+        no switching has been done:*/
+        while (switching) {
+            //start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /*Loop through all table rows (except the
+            first, which contains table headers):*/
+            for (i = 1; i < (rows.length - 1); i++) {
+                //start by saying there should be no switching:
+                shouldSwitch = false;
+                /*Get the two elements you want to compare,
+                one from current row and one from the next:*/
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /*check if the two rows should switch place,
+                based on the direction, asc or desc:*/
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /*If a switch has been marked, make the switch
+                and mark that a switch has been done:*/
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                //Each time a switch is done, increase this count by 1:
+                switchcount++;
+            } else {
+                /*If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again.*/
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>

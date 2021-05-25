@@ -7,13 +7,18 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalCapstone;
+using FinalCapstone.Models;
 
 namespace FinalCapstone.Controllers
 {
     public class ProgramsController : Controller
     {
         private FinalCapstoneEntities db = new FinalCapstoneEntities();
-
+        public class RetJson
+        {
+            public int status;
+            public string message;
+        }
         // GET: Programs
         public ActionResult Index()
         {
@@ -27,21 +32,35 @@ namespace FinalCapstone.Controllers
             return View();
         }
 
-        // POST: Programs/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "program_id,program1")] Program program)
+        // POST: Programs/Create        
+        [HttpPost]      
+        public JsonResult Create([Bind(Include = "program_id,program1,program_title,program_description")] Program program)
         {
+            RetJson a = new RetJson();
+
+           
             if (ModelState.IsValid)
             {
-                db.Programs.Add(program);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var chk1 = (from x in db.Programs where x.program1 == program.program1 select x).FirstOrDefault();
+
+                if (chk1 == null)
+                {
+                    db.Programs.Add(program);
+                    db.SaveChanges();
+                    a.status = 0;
+                    a.message = "success";
+
+                }
+                else
+                {
+                    a.status = 1;
+                    a.message = "Program already exists";
+
+                }
+               
             }
 
-            return View(program);
+            return Json(a,JsonRequestBehavior.AllowGet); ;
         }
 
         // GET: Programs/Edit/5
@@ -64,7 +83,7 @@ namespace FinalCapstone.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "program_id,program1")] Program program)
+        public ActionResult Edit([Bind(Include = "program_id,program1,program_title,program_description")] Program program)
         {
             if (ModelState.IsValid)
             {

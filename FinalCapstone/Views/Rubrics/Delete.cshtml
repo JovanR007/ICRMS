@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Delete";
-    Layout = "~/Views/Shared/_LayoutTeacher.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
@@ -16,24 +16,30 @@
             @Html.DisplayNameFor(model => model.outputs)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.outputs)
+        <dd style="font-size:30px; color:black">
+            <b>
+                @Html.DisplayFor(model => model.outputs)
+            </b>
         </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.weight)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.weight)
+        <dd style="font-size:30px; color:black">
+            <b>
+                @Html.DisplayFor(model => model.weight)
+            </b>
         </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.Course.courseno)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Course.courseno)
+        <dd style="font-size:30px; color:black">
+            <b>
+                @Html.DisplayFor(model => model.Course.courseno)
+            </b>
         </dd>
 
     </dl>
@@ -42,12 +48,11 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" />
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-danger" />
 
-
-        </div>
+        @Html.ActionLink("Back to List", "Index", new { id = ViewBag.test })
+    </div>
     }
 </div>
 
-@Html.ActionLink("Back to List", "Index", new { id = ViewBag.test })

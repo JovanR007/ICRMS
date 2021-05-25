@@ -24,6 +24,8 @@ namespace FinalCapstone
         public string program1 { get; set; }
         public Nullable<int> user_login { get; set; }
         public Nullable<System.DateTime> user_date { get; set; }
+        public string program_title { get; set; }
+        public string program_description { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }

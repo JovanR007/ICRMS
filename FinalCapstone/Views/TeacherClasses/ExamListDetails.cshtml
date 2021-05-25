@@ -11,8 +11,10 @@
 </head>
 <body>
     <h2>Exam List Details - @ViewBag.coursetitle</h2>
+    <i><h4> Add an exam first then set a perfect score for the exam</h4></i>
     <p>
-        <button class="btn btn-primary addexam" data-id="@ViewBag.userlogin">Add Exam</button>
+        <button class="btn btn-primary addexam2" data-id="@ViewBag.userlogin">Add Exam</button>
+        <button class="btn btn-primary addexam" data-id="@ViewBag.userlogin">Set Perfect Score</button>
     </p>
     <div class="row">
         <div class="col-md-12">
@@ -77,165 +79,278 @@
 
                                         foreach (var x in Model._examtype)
                                         {
-                                            <option value="@x.examtype_id">@x.exam_type  @x.examtype_name</option>
+                                            <option value="@x.examtype_id"> @x.examtype_name</option>
                                         }
                                     }
                                 </select>
-                            @*</div>*@
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label class="">Perfect Score <b style="color: red;"></b></label>
-                                    <input class="form-control mandatory" id="perfectscoreID" step="any" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="3" required="required" />
+                                @*</div>*@
+                             
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="">Perfect Score <b style="color: red;"></b></label>
+                                        <input class="form-control mandatory" id="perfectscoreID" step="any" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="3" required="required" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary btn-addexam" data-classid="@ViewBag.classid"><i class="fas fa-save"></i> Save</button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary btn-addexam" data-classid="@ViewBag.classid"><i class="fas fa-save"></i> Save</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+          </div>
             </div>
 
-    }
-
-    <style>
-        .numval {
-            text-align: right;
-        }
-    </style>
-    <script src="~/Scripts/json2.js"> </script>
-    <script src="~/Scripts/jquery-3.3.1.min.js"> </script>
-    <script type="text/javascript">
-
-
-
-        $(document).ready(function () {
-            GetExamType();
-        });
         
 
 
+                <div id="AddExamModal2" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exammodaltitle">Add Exam</h4>
+                            </div>
+                            
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <label class="">Grading Specification <b style="color: red;">*</b></label>
+                                        <select id="selRubric" class="selectpicker form-control">
+                                            @{
+                                                < option value = "" ></ option >
 
-        $(document).on('click', '.delexamlst', function () {
-            var examid = $(this).attr('data-examid');
-            var classid = $(this).attr('data-classid');
-            var examtype_id = $(this).attr('data-examtype_id');
+                                                foreach (var x in Model._rubric)
+                                                {
+                                                    <option value="@x.rubric_id">  @x.rubric_name</option>
+                                                }
+                                            }
+                                        </select>
+                                        @*</div>*@
 
-            if (examid != '') {
-                $.ajax({
-                    type: "POST",
-                    url: '/TeacherClasses/DeleteExamList',
-                    type: "post",
-                    dataType: 'json',
-                    data: { 'examlist_id': examid, 'classid': classid, 'examtype_id': examtype_id },
-                    success: function (datax) {
-                        if (datax.respcode == 1) {
-                            alert('success');
-                            location.reload();
-                        }
-                        else {
-                            alert('fail');
-                        }
+                                        <div class="row" >
+                                            <div class="col-md-10">
+                                                <label class="">Exam Type<b style="color: red;">*</b></label>
+                                                <input class="form-control mandatory" id="inExamtype" required="required" style=" width:385px" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary btn-addexam2" data-classid="@ViewBag.classid"><i class="fas fa-save"></i> Save</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+        </div>
+
                     }
-                });
-            }
-        });
 
-        $(document).on('click', '.addexam', function () {
-              $('#AddExamModal').modal('show');
-        });
-
-        $(document).on('click', '.btn-addexam', function () {
-            var classid = $(this).attr('data-classid');
-            var examtypeid = $('#selExamType').val();
-            var lock = $('#chkLock').is(':checked');
-            var userlogin = $('.addexam').attr('data-id');
-            var perfectscore = $('#perfectscoreID').val();
-            if (examtypeid == '') {
-                alert('Exam Type is empty.');
-            }
-
-            if (perfectscore == '') {
-                alert('Perfect Score is blank. Input value > 0')
-            }
-
-
-                if (classid != '' && examtypeid != '' && perfectscore != '') {
-                $.ajax({
-                    type: "POST",
-                    url: '/TeacherClasses/InsertExamList',
-                    type: "post",
-                    dataType: 'json',
-                    data: { 'classid': classid, 'examtypeid': examtypeid, 'perfectscore':perfectscore, 'islock': lock, 'userlogin': userlogin },
-                    success: function (datax) {
-                        if (datax.respcode == 1) {
-                            alert('success');
-                            location.reload();
+                    <style>
+                        .numval {
+                            text-align: right;
                         }
-                        else {
-                            alert('fail');
+                    </style>
+                    <script src="~/Scripts/json2.js"></script>
+                    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+                    <script type="text/javascript">
+
+
+
+                        $(document).ready(function () {
+                            GetExamType();
+                        });
+
+                        $(document).ready(function () {
+                            GetRubric();
+                        });
+
+                        $(document).on('click', '.addexam2', function () {
+                            $('#AddExamModal2').modal('show');
+                        });
+
+                        $(document).on('click', '.btn-addexam2', function () {
+                            var classid = $(this).attr('data-classid');
+                            var Rubrictype = $('#selRubric').val();
+                            var Examtype = $('#inExamtype').val();
+                            var userlogin = $('.addexam').attr('data-id');
+
+                            if (Rubrictype == '') {
+                                alert('Grading Specification is empty.');
+                            }
+
+                            if (Examtype == '') {
+                                alert('Exam Type is empty.');
+                            }
+
+                            if (classid != '' && Rubrictype != '' && Examtype != '') {
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/TeacherClasses/InsertExamRubricList',
+                                    type: "post",
+                                    dataType: 'json',
+                                    data: { 'rubricid': Rubrictype, 'examtypename': Examtype, 'userlogin': userlogin },
+                                    success: function (datax) {
+                                        if (datax.respcode == 1) {
+                                            alert('success');
+                                            location.reload();
+                                        }
+                                        else {
+                                            alert('fail');
+                                        }
+                                    }
+                                });
+                            }
+
+                        });
+
+                        $(document).on('change', '#selRubric', function () {
+                            GetRubric();
+                        });
+
+                        function GetRubric() {
+                            if ($('#selRubric').val() != '') {
+                                var classid = $(this).attr('data-classid');
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/TeacherClasses/GetRubric',
+                                    type: "post",
+                                    dataType: 'json',
+                                    data: { 'classid': classid, 'rubricid': $('#selRubric').val() },
+                                    success: function (datax) {
+                                        if (datax.respcode == 1) {
+                                        }
+                                        else {
+                                            alert('fail');
+                                        }
+                                    }
+                                });
+                            }
                         }
-                    }
-                });
-            }
+                        $(document).on('click', '.delexamlst', function () {
+                            var examid = $(this).attr('data-examid');
+                            var classid = $(this).attr('data-classid');
+                            var examtype_id = $(this).attr('data-examtype_id');
 
-        });
+                            if (examid != '') {
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/TeacherClasses/DeleteExamList',
+                                    type: "post",
+                                    dataType: 'json',
+                                    data: { 'examlist_id': examid, 'classid': classid, 'examtype_id': examtype_id },
+                                    success: function (datax) {
+                                        if (datax.respcode == 1) {
+                                            alert('success');
+                                            location.reload();
+                                        }
+                                        else {
+                                            alert('fail');
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                        $(document).on('click', '.addexam', function () {
+                            $('#AddExamModal').modal('show');
+                        });
+
+                        $(document).on('click', '.addexam2', function () {
+                            $('#AddExamModal2').modal('show');
+                        });
+
+                        $(document).on('click', '.btn-addexam', function () {
+                            var classid = $(this).attr('data-classid');
+                            var examtypeid = $('#selExamType').val();
+                            var lock = $('#chkLock').is(':checked');
+                            var userlogin = $('.addexam').attr('data-id');
+                            var perfectscore = $('#perfectscoreID').val();
+                            if (examtypeid == '') {
+                                alert('Exam Type is empty.');
+                            }
+
+                            if (perfectscore == '') {
+                                alert('Perfect Score is blank. Input value > 0')
+                            }
 
 
-        $(document).on('change', '#selExamType', function () {
-            GetExamType();
-        });
+                            if (classid != '' && examtypeid != '' && perfectscore != '') {
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/TeacherClasses/InsertExamList',
+                                    type: "post",
+                                    dataType: 'json',
+                                    data: { 'classid': classid, 'examtypeid': examtypeid, 'perfectscore': perfectscore, 'islock': lock, 'userlogin': userlogin },
+                                    success: function (datax) {
+                                        if (datax.respcode == 1) {
+                                            alert('success');
+                                            location.reload();
+                                        }
+                                        else {
+                                            alert('fail');
+                                        }
+                                    }
+                                });
+                            }
 
-        $('#chkLock').on('change', function () {
-            //if ($('#chkLock').is(":checked")) {
-            //    $(this).closest('label').html('Lock');
-            //}
-            //else {
-            //    $(this).closest('label').html('Unlock');
-            //}
-        });
+                        });
 
-        $(document).on('click', '.editexam', function () {
-            $('#EditExamModal').modal('show');
-        });
 
-        function ReFreshEntry()
-        {
-            $('#selExamType').closest('div.selExamTypeID').show();
-            $('input[name=ExamType]').closest('div.txtExamTypeID').hide();
-            $('input[name=ExamType]').val('');
-            $('input[name=ExamName]').val('');
-            $('input[name=PerfectScore]').val('');
-            $('input[name=Weight]').val('');
-            $('#chkLock').prop('checked', false);
-            $("#selExamType").val($("#selExamType option:first").val());
-            //$('.selectpicker').selectpicker('refresh');
-        }
+                        $(document).on('change', '#selExamType', function () {
+                            GetExamType();
+                        });
 
-        function GetExamType() {
-            if ($('#selExamType').val() != '') {
-                var classid = $(this).attr('data-classid');
-                $.ajax({
-                    type: "POST",
-                    url: '/TeacherClasses/AddExamType',
-                    type: "post",
-                    dataType: 'json',
-                    data: { 'classid':classid, 'examtypeid': $('#selExamType').val() },
-                    success: function (datax) {
-                        if (datax.respcode == 1) {
-                            $('input[name=ExamName]').val(datax._data[0].examtype_name);
-                            $('input[name=Weight]').val(datax._data[0].weight);
+                        $('#chkLock').on('change', function () {
+                            //if ($('#chkLock').is(":checked")) {
+                            //    $(this).closest('label').html('Lock');
+                            //}
+                            //else {
+                            //    $(this).closest('label').html('Unlock');
+                            //}
+                        });
+
+                        $(document).on('click', '.editexam', function () {
+                            $('#EditExamModal').modal('show');
+                        });
+
+                        function ReFreshEntry() {
+                            $('#selExamType').closest('div.selExamTypeID').show();
+                            $('input[name=ExamType]').closest('div.txtExamTypeID').hide();
+                            $('input[name=ExamType]').val('');
+                            $('input[name=ExamName]').val('');
+                            $('input[name=PerfectScore]').val('');
+                            $('input[name=Weight]').val('');
+                            $('#chkLock').prop('checked', false);
+                            $("#selExamType").val($("#selExamType option:first").val());
+                            //$('.selectpicker').selectpicker('refresh');
                         }
-                        else {
-                            alert('fail');
-                        }
-                    }
-                });
-            }
-        }
 
-    </script>
+                        function GetExamType() {
+                            if ($('#selExamType').val() != '') {
+                                var classid = $(this).attr('data-classid');
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/TeacherClasses/AddExamType',
+                                    type: "post",
+                                    dataType: 'json',
+                                    data: { 'classid': classid, 'examtypeid': $('#selExamType').val() },
+                                    success: function (datax) {
+                                        if (datax.respcode == 1) {
+                                            $('input[name=ExamName]').val(datax._data[0].examtype_name);
+                                            $('input[name=Weight]').val(datax._data[0].weight);
+                                        }
+                                        else {
+                                            alert('fail');
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                    </script>
 </body>
 </html>

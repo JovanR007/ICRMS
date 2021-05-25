@@ -134,6 +134,8 @@
           <Property Name="program" Type="varchar" MaxLength="50" />
           <Property Name="user_login" Type="int" />
           <Property Name="user_date" Type="datetime" />
+          <Property Name="program_title" Type="varchar" MaxLength="50" />
+          <Property Name="program_description" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -160,8 +162,8 @@
             <PropertyRef Name="schedule_id" />
           </Key>
           <Property Name="schedule_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="time_start" Type="varchar" MaxLength="50" />
-          <Property Name="time_end" Type="varchar" MaxLength="50" />
+          <Property Name="time_start" Type="time" Precision="7" />
+          <Property Name="time_end" Type="time" Precision="7" />
           <Property Name="day" Type="varchar" MaxLength="50" />
           <Property Name="user_login" Type="int" />
           <Property Name="user_date" Type="datetime" />
@@ -203,20 +205,10 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="ClassInClasslist">
-          <End Role="Class" Type="Self.Class" Multiplicity="0..1" />
-          <End Role="ClassList" Type="Self.ClassList" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Class">
-              <PropertyRef Name="class_id" />
-            </Principal>
-            <Dependent Role="ClassList">
-              <PropertyRef Name="class_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="ClassInExamList">
-          <End Role="Class" Type="Self.Class" Multiplicity="0..1" />
+          <End Role="Class" Type="Self.Class" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ExamList" Type="Self.ExamList" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Class">
@@ -228,7 +220,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="ClassroomInClass">
-          <End Role="Classroom" Type="Self.Classroom" Multiplicity="0..1" />
+          <End Role="Classroom" Type="Self.Classroom" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Class" Type="Self.Class" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Classroom">
@@ -324,7 +318,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="ScheduleInClass">
-          <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1" />
+          <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Class" Type="Self.Class" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Schedule">
@@ -336,7 +332,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="SubjectInClass">
-          <End Role="Subject" Type="Self.Subject" Multiplicity="0..1" />
+          <End Role="Subject" Type="Self.Subject" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Class" Type="Self.Class" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Subject">
@@ -348,7 +346,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="UserInClass">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Class" Type="Self.Class" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -360,7 +360,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="UserInClasslist">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ClassList" Type="Self.ClassList" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -372,7 +374,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="UserInExamScore">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ExamScore" Type="Self.ExamScore" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -404,10 +408,6 @@
           <AssociationSet Name="BatchInUser" Association="Self.BatchInUser">
             <End Role="Batch" EntitySet="Batch" />
             <End Role="User" EntitySet="User" />
-          </AssociationSet>
-          <AssociationSet Name="ClassInClasslist" Association="Self.ClassInClasslist">
-            <End Role="Class" EntitySet="Class" />
-            <End Role="ClassList" EntitySet="ClassList" />
           </AssociationSet>
           <AssociationSet Name="ClassInExamList" Association="Self.ClassInExamList">
             <End Role="Class" EntitySet="Class" />
@@ -619,6 +619,8 @@
           <Property Name="user_login" Type="Int32" />
           <Property Name="user_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Users" Relationship="Self.ProgramInUser" FromRole="Program" ToRole="User" />
+          <Property Name="program_title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="program_description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -648,8 +650,8 @@
             <PropertyRef Name="schedule_id" />
           </Key>
           <Property Name="schedule_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="time_start" Type="String" />
-          <Property Name="time_end" Type="String" />
+          <Property Name="time_start" Type="Time" Precision="7" />
+          <Property Name="time_end" Type="Time" Precision="7" />
           <Property Name="day" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="user_login" Type="Int32" />
           <Property Name="user_date" Type="DateTime" Precision="3" />
@@ -1104,6 +1106,8 @@
           <EntitySetMapping Name="Programs">
             <EntityTypeMapping TypeName="Capstone2Model.Program">
               <MappingFragment StoreEntitySet="Program">
+                <ScalarProperty Name="program_description" ColumnName="program_description" />
+                <ScalarProperty Name="program_title" ColumnName="program_title" />
                 <ScalarProperty Name="program_id" ColumnName="program_id" />
                 <ScalarProperty Name="program1" ColumnName="program" />
                 <ScalarProperty Name="user_login" ColumnName="user_login" />

@@ -506,17 +506,26 @@ namespace FinalCapstone.Models
                                             LEFT JOIN [ExamList] ON [ExamList].examtype_id = [ExamType].examtype_id
 	                                            AND [ExamList].class_id = [Class].class_id 
                                             WHERE [ExamList].examtype_id IS NULL
-                                             ");
+
+                                             SELECT [Rubric].rubric_id  
+	                                            ,outputs as rubric_name
+                                            FROM [Rubric] 
+                                            inner join class on class_id = @classid
+                                            inner join Subject on Subject.subject_id = class.subject_id
+                                                and Subject.course_id = [Rubric].course_id");
+                
 
                 var x = _db.QueryMultiple(sql, new { classid });
                 var examList = x.Read<ExamList_Model>().ToList();
                 var examType = x.Read<ExamList_Model>().ToList();
+                var rubricList = x.Read<ExamList_Model>().ToList();
                 return new getExamListResponse
                 {
                     respcode = 1,
                     message = "success",
                     _data = examList,
-                    _examtype = examType
+                    _examtype = examType,
+                    _rubric= rubricList
                 };
             }
             catch (Exception ex)
@@ -576,7 +585,45 @@ namespace FinalCapstone.Models
             }
         }
 
-          public Responses DeleteExamList(int? examlist_id, int? classid, int? examtype_id)
+        public getExamTypeResponse GetRubric(int? classid, int? rubricid)
+        {
+            string sql = @" SELECT [Rubric].rubric_id  
+	                            ,outputs as rubric_name
+                            FROM [Rubric] 
+                            inner join class on class_id = @classid
+                            inner join Subject on Subject.subject_id = class.subject_id
+                                and Subject.course_id = [Rubric].course_id
+                                and [Rubric].rubric_id = @rubricid
+                            ";
+            var x = _db.Query<ExamList_Model>(sql, new { classid, rubricid }).ToList();
+            return new getExamTypeResponse
+            {
+                respcode = 1,
+                message = "success",
+                _data = x,
+            };
+        }
+
+        public Responses InsertDataExamRubricList(int? rubricid, string examtypename, string userlogin)
+        {
+            try
+            {
+                string sql = string.Format(@"INSERT INTO [ExamType] (rubric_id, examtype_name, user_login,user_date) 
+                                            VALUES(@rubricid, @examtypename, @userlogin, getdate()) ");
+
+                var x = _db.Execute(sql, new { rubricid, examtypename, userlogin });
+                return new Responses { respcode = 1, message = "success" };
+
+            }
+            catch (Exception ex)
+            {
+                return new Responses { respcode = 0, message = ex.Message };
+            }
+        }
+
+
+
+        public Responses DeleteExamList(int? examlist_id, int? classid, int? examtype_id)
         {
             try
             {
@@ -586,8 +633,13 @@ namespace FinalCapstone.Models
                 string sql2 = string.Format(@" DELETE FROM [ExamScore]
                                               WHERE class_id = @classid
                                                AND examtype_id = @examtype_id");
+
+                string sql3 = string.Format(@" DELETE FROM [ExamType]
+                                              WHERE examtype_id = @examtype_id");
+
                 var x = _db.Execute(sql, new { examlist_id });
                 var y = _db.Execute(sql2, new { classid, examtype_id });
+                var z = _db.Execute(sql3, new { examtype_id });
 
                 return new Responses { respcode = 1, message = "success" };
             }
@@ -625,6 +677,8 @@ namespace FinalCapstone.Models
         public List<ExamList_Model> _data { get; set; }
 
         public List<ExamList_Model> _examtype { get; set; }
+
+        public List<ExamList_Model> _rubric { get; set; }
     }
 
     public class getExamTypeResponse : Responses
@@ -667,6 +721,7 @@ namespace FinalCapstone.Models
         public int examtype_id { get; set; }
         public decimal grade { get; set; }
         public int score { get; set; }
+        public string rubric_name { get; set; }
     }
     public class TeacherClasses_Model
     {
@@ -675,8 +730,8 @@ namespace FinalCapstone.Models
         public string courseno { get; set; }
         public string coursetitle { get; set; }
         public string roomnumber { get; set; }
-        public string starttime { get; set; }
-        public string endtime { get; set; }
+        public Nullable<System.TimeSpan> starttime { get; set; }
+        public Nullable<System.TimeSpan> endtime { get; set; }
         public string day { get; set; }
         public int groupno { get; set; }
     }

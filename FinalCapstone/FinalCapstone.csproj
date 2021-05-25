@@ -195,6 +195,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AddExamModel.cs" />
     <Compile Include="Models\ClassCreation.cs" />
     <Compile Include="Models\ClassViewModel.cs" />
     <Compile Include="Models\DisplayStudentTable.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Models\SubjectViewModel.cs" />
     <Compile Include="Models\TeacherClass.cs" />
     <Compile Include="Models\TeacherClassesViewModel.cs" />
+    <Compile Include="Models\UserEditModel.cs" />
     <Compile Include="Program.cs">
       <DependentUpon>FinalCapstone.tt</DependentUpon>
     </Compile>
@@ -523,6 +525,7 @@
     <Content Include="FinalCapstone.edmx.diagram">
       <DependentUpon>FinalCapstone.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -646,7 +649,6 @@
     <Content Include="Views\Login\TeacherIndex.cshtml" />
     <Content Include="Scripts\Teacherjs\.DS_Store" />
     <Content Include="Views\Shared\_LayoutTeacher.cshtml" />
-    <Content Include="Views\Classes\TeacherClasses.cshtml" />
     <Content Include="Views\TeacherClasses\Index.cshtml" />
     <Content Include="Views\TeacherClasses\ClassDetails.cshtml" />
     <Content Include="Views\Subjects\Create.cshtml" />
@@ -662,10 +664,10 @@
     <Content Include="Views\TeacherClasses\ClassListDetails.cshtml" />
     <Content Include="Views\TeacherClasses\AddClassList.cshtml" />
     <Content Include="Views\TeacherClasses\ExamListDetails.cshtml" />
-    <Content Include="Views\Login\StudentIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="images\App_LocalResources\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -11,6 +11,13 @@ using FinalCapstone.Models;
 
 namespace FinalCapstone.Controllers
 {
+    public class ResultList
+    {
+        public Nullable <int> X { get; set; }
+        public Nullable <int> Y { get; set; }
+        public Nullable <int> Result_X { get; set; }
+        public Nullable  <int> Result_Y { get; set; }
+    }
     public class RubricsController : Controller
     {
         private FinalCapstoneEntities db = new FinalCapstoneEntities();
@@ -21,7 +28,15 @@ namespace FinalCapstone.Controllers
             var rubrics = db.Rubrics.Include(r => r.Course);
             List<Rubric> lstRubric = db.Rubrics.Where(x => x.course_id == id).ToList();
             ViewBag.CourseId = id;
+            //List<Rubric> weight = new List<Rubric>();
+            //var Result = new List<ResultList>();
+            //for (int i = 0; i<weight.Count; i++)
+            //{
+            //    Result.Add(new ResultList { X = weight[i].weight });
+            //}
+            //Result.Add(new ResultList { Result_X = weight.Sum(X => X.weight) });
 
+            //ViewBag.test = Result;
             return View(lstRubric);          
         }
 

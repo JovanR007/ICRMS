@@ -33,10 +33,10 @@
                 @if (ViewBag.roleid == 2)
                 {
                     <td><p>@Html.ActionLink("View Class List", "ClassListDetails", new { classid = item.classid, coursetitle = item.coursetitle, userlogin = ViewBag.idnumber })</p></td>
-                    <td><p>@Html.ActionLink("View Exam List", "ExamListDetails", new { classid = item.classid, coursetitle = item.coursetitle, userlogin = ViewBag.idnumber })</p></td>
+                    <td><p>@Html.ActionLink("View Exam List", "ExamListDetails", new { classid = item.classid, coursetitle = item.coursetitle, userlogin = ViewBag.idnumber , courseid = item.courseid })</p></td>
                 }
 
-                <td><p>@Html.ActionLink("View Class Grade", "ClassDetails", new { classid = item.classid, coursetitle = item.coursetitle, userlogin = ViewBag.idnumber, role= ViewBag.roleid })</p></td>
+                <td><p>@Html.ActionLink("View Class Grade", "ClassDetails", new { classid = item.classid, coursetitle = item.coursetitle, userlogin = ViewBag.idnumber, role= ViewBag.roleid})</p></td>
 
             </tr>
         }

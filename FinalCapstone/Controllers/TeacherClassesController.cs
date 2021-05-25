@@ -89,7 +89,7 @@ namespace FinalCapstone.Controllers
             ViewData["coursetitle"] = coursetitle;
             ViewData["userlogin"] = userlogin;
             ViewBag.fullname = Session["fullname"];
-            ViewBag.roleid = TempData["roleid"];
+            ViewBag.roleid = Session["role_id"];
             ViewBag.idnumber = ViewData["userlogin"];
             TeacherClassesModel classes = new TeacherClassesModel();
             var x = classes.GetClassListDetails(classid);
@@ -110,6 +110,7 @@ namespace FinalCapstone.Controllers
 
         public JsonResult AddStudent(int? class_id, int? user_id, string userlogin)
         {
+
             var x = new TeacherClassesModel().InsertClassList(class_id, user_id, userlogin);
             return Json(x, JsonRequestBehavior.AllowGet);
         }
@@ -125,20 +126,25 @@ namespace FinalCapstone.Controllers
             ViewData["coursetitle"] = coursetitle;
             ViewData["userlogin"] = userlogin;
 
-            ViewBag.roleid = TempData["roleid"];
+            ViewBag.roleid = Session["role_id"];
             ViewBag.idnumber = ViewData["userlogin"];
             var x = new TeacherClassesModel().GetExamList(classid);
+           
             return View(x);
         }
 
         public JsonResult AddExamType(int? classid, int? examtypeid)
         {
+            ViewBag.roleid = Session["role_id"];
+            ViewBag.idnumber = ViewData["userlogin"];
             var x = new TeacherClassesModel().GetExamTypes(classid, examtypeid);
             return Json(x, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult InsertExamList(int? classid, int? examtypeid, int? perfectscore,  bool islock, string userlogin)
         {
+            ViewBag.roleid = Session["role_id"];
+            ViewBag.idnumber = ViewData["userlogin"];
             var x = new TeacherClassesModel().InsertDataExamList(classid, examtypeid, perfectscore, islock, userlogin);
             return Json(x, JsonRequestBehavior.AllowGet);
         }
@@ -146,10 +152,30 @@ namespace FinalCapstone.Controllers
   
         public JsonResult DeleteExamList(int? examlist_id, int? classid, int? examtype_id)
         {
+            ViewBag.roleid = Session["role_id"];
+            ViewBag.idnumber = ViewData["userlogin"];
             var x = new TeacherClassesModel().DeleteExamList(examlist_id, classid, examtype_id);
             return Json(x, JsonRequestBehavior.AllowGet);
         }
 
         #endregion
+
+        public JsonResult AddRubric(int? classid, int? rubricid)
+        {
+            ViewBag.roleid = Session["role_id"];
+            ViewBag.idnumber = ViewData["userlogin"];
+            var x = new TeacherClassesModel().GetRubric(classid, rubricid);
+            return Json(x, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public JsonResult InsertExamRubricList(int? rubricid, string examtypename, string userlogin)
+        {
+            ViewBag.roleid = Session["role_id"];
+            ViewBag.idnumber = ViewData["userlogin"];
+            var x = new TeacherClassesModel().InsertDataExamRubricList(rubricid, examtypename, userlogin);
+            return Json(x, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

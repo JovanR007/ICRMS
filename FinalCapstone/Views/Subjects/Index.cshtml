@@ -5,12 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<input id="myInput" type="text" style="float:right" placeholder="Search Here">
+
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#0275d8" class="bi bi-journal-plus" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5z" />
+        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
+        <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
+    </svg>
+    @Html.ActionLink("Create a new Subject", "Create", "Subjects", new { @class = "btn btn-outline-primary " })
 </p>
-<table class="table">
+<table class="table" id="myTable">
     <tr>
         <th>
             Course Number
@@ -19,13 +25,15 @@
             Course Title
         </th>
         <th>
-            Course Description
+            <center>
+                Course Description
+            </center>
         </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
-<tr>
+<tr >
     <td>
         @Html.DisplayFor(modelItem => item.Course.courseno)
     </td>
@@ -36,12 +44,26 @@
         @Html.DisplayFor(modelItem => item.Course.coursedescription)
     </td>
     <td>
+        <pre>
+
+                <button class="btn btn-outline-primary" onclick="location.href='@Url.Action("Edit","Subjects", new { id = item.subject_id, courseid=item.course_id})'">Edit</button> <button class="btn btn-outline-danger" onclick="location.href='@Url.Action("Delete","Subjects", new { id =item.subject_id})'">Delete</button>
+
+        <button class="btn btn-outline-info" onclick="location.href='@Url.Action("Index","Rubrics", new { id = item.Course.course_id})'">Create Grading Specification</button>
+        </pre>
         
-        <button onclick="location.href='@Url.Action("Edit","Subjects", new { id = item.subject_id, courseid=item.course_id})'">Edit</button>
-        <button onclick="location.href='@Url.Action("Delete","Subjects", new { id =item.subject_id})'">Delete</button>
-        <button onclick="location.href='@Url.Action("Index","Rubrics", new { id = item.Course.course_id})'">Create Rubrics</button>
     </td>
 </tr>
 }
 
 </table>
+
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>

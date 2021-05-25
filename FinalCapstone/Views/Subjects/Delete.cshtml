@@ -15,14 +15,14 @@
             Course Number
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Course.courseno)
+        <dd style="font-size:30px; color:black">
+            <b> @Html.DisplayFor(model => model.Course.courseno)</b>
         </dd>
         <dt>
            Course
         </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Course.coursetitle)
+        <dd style="font-size:30px; color:black">
+            <b>  @Html.DisplayFor(model => model.Course.coursetitle)</b>
         </dd>
     </dl>
 
@@ -30,7 +30,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

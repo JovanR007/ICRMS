@@ -6,7 +6,11 @@
 
 
 <p>
-    @Html.ActionLink("Create New Program", "Create")
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#0275d8" class="bi bi-file-plus" viewBox="0 0 16 16">
+        <path d="M8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z" />
+        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
+    </svg>
+    @Html.ActionLink("Create New Program", "Create", "Programs", new { @class = "btn btn-outline-primary " })
 </p>
 <div class="card card-cascade narrower">
 
@@ -21,21 +25,40 @@
         <div class="table-wrapper">
             <table class="table table-hover mb-0">    
                 <thead>
-                    <tr>                    
+                    <tr>
                         <th class="th-lg">
                             <a>
-                               Program
+                                Program
                                 <i class="fas fa-sort ml-1"></i>
                             </a>
-                        </th>    
-                      
-                </thead>               
+                        </th>
+                        <th class="th-lg">
+                            <a>
+                                Program Title
+                                <i class="fas fa-sort ml-1"></i>
+                            </a>
+                        </th>
+
+
+                        <th class="th-lg">
+                            <a>
+                                Program Description
+                                <i class="fas fa-sort ml-1"></i>
+                            </a>
+                        </th>
+</thead>               
                 <tbody>
                     @foreach (var item in Model)
                     {
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.program1)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem=>item.program_title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem=>item.program_description)
                         </td>
                         <td></td>
                         <td></td>
@@ -53,9 +76,25 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                       
+                       
                         <td>
-                            <button onclick="location.href='@Url.Action("Edit","Programs", new { id =item.program_id})'">Edit</button>
-                            <button onclick="location.href='@Url.Action("Delete","Programs", new { id =item.program_id})'">Delete</button>
+                            <button class="btn btn-outline-primary" onclick="location.href='@Url.Action("Edit","Programs", new { id =item.program_id})'">Edit</button>
+                            <button class="btn btn-outline-danger" onclick="location.href='@Url.Action("Delete","Programs", new { id =item.program_id})'">Delete</button>
                         </td>
                     </tr>
 

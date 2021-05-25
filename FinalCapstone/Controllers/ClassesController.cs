@@ -36,8 +36,8 @@ namespace FinalCapstone.Controllers
         {
             var chk1 = (from x in db.Subjects where x.course_id == model.course_id select x).FirstOrDefault();
             var chk2 = (from y in db.Subjects where y.course_id == model.course_id select y).FirstOrDefault();
-           
-               
+
+            ViewBag.value = DateTime.Now;
 
                 Classroom classroom = new Classroom();
                 classroom.room_number = model.room_number;
